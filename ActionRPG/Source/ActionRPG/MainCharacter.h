@@ -37,6 +37,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Animation, Meta = (AllowPrivateAccess = true))
 	class UMainCharacterAnimInstance* MainAnim;
 
+	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
+	class USoundCue* AttackSound;
+
 private:
 	int32 AttackSectionIndex = 0;
 	bool bIsAttacking = false;

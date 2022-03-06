@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MainCharacterAnimInstance.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -51,6 +53,12 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 650.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_ATTACK(TEXT("SoundCue'/Game/_Game/Character/Sound/Kwang_Effort_Attack.Kwang_Effort_Attack'"));
+	if (SC_ATTACK.Succeeded())
+	{
+		AttackSound = SC_ATTACK.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -122,6 +130,8 @@ void AMainCharacter::Attack()
 
 	if (MainAnim)
 	{
+		UGameplayStatics::PlaySound2D(GetWorld(), AttackSound);
+
 		MainAnim->PlayAttackMontage();
 		MainAnim->JumpToSection(AttackSectionIndex);
 		AttackSectionIndex = (AttackSectionIndex + 1) % 4;
