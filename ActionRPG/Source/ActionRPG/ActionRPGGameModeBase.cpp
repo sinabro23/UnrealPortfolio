@@ -8,5 +8,5 @@
 AActionRPGGameModeBase::AActionRPGGameModeBase()
 {
 	DefaultPawnClass = AMainCharacter::StaticClass();
-	PlayerControllerClass = AMainPlayerController::StaticClass();
+	
 }

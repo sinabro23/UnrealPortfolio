@@ -48,4 +48,22 @@ public:
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+
+	// ½ºÅÈ °ü·Ã
+private:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float CurrentHP = 100.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float MaxHP = 100.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float CurrentMP = 60.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float MaxMP = 100.f;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetHPRatio() { return CurrentHP / MaxHP; }
+
 };
