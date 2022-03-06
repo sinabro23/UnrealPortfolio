@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "MainCharacterAnimInstance.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate)
 /**
  * 
  */
@@ -35,4 +36,10 @@ public:
 	void PlayAttackMontage();
 	void JumpToSection(int32 MontageSection);
 	FName GetAttackMontageName(int32 MontageSection);
+
+	UFUNCTION()
+	void AnimNotify_AttackCheck();
+
+public:
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
 };

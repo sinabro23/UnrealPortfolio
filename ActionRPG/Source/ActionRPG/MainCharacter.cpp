@@ -75,7 +75,10 @@ void AMainCharacter::PostInitializeComponents()
 	if (MainAnim)
 	{
 		MainAnim->OnMontageEnded.AddDynamic(this, &AMainCharacter::OnAttackMontageEnded);
+		MainAnim->OnAttackHitCheck.AddUObject(this, &AMainCharacter::AttackHitCheck);
 	}
+
+
 
 }
 
@@ -92,6 +95,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AMainCharacter::Attack);
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMainCharacter::Jump);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMainCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMainCharacter::LeftRight);
@@ -139,6 +143,11 @@ void AMainCharacter::Attack()
 
 	bIsAttacking = true;
 
+}
+
+void AMainCharacter::AttackHitCheck()
+{
+	UE_LOG(LogTemp, Warning, TEXT("AttackHitCheck"));
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

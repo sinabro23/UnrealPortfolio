@@ -48,11 +48,12 @@ public:
 	void LeftRight(float InputValue);
 
 	void Attack();
+	void AttackHitCheck();
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
-
+	
 	// ½ºÅÈ °ü·Ã
 private:
 
