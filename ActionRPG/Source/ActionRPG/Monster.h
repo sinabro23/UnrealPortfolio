@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate)
+
 UCLASS()
 class ACTIONRPG_API AMonster : public ACharacter
 {
@@ -25,9 +27,24 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void PostInitializeComponents() override;
 
 public:
 	UPROPERTY()
 	class AMonsterAIController* MonsterAIController;
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent* HPBar;
 
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float CurrentHP = 50.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float MaxHP = 50.f;
+	// 피관련되는건 무조건 SetHP로 호출
+public:
+	void SetHP(float NewHP);
+	float GetHPRatio();
+
+public:
+	FOnHPChangedDelegate OnHPChanged;
 };

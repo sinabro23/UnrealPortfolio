@@ -43,6 +43,12 @@ private:
 private:
 	int32 AttackSectionIndex = 0;
 	bool bIsAttacking = false;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	float AttackRange;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	float AttackRadius;
+
 public:
 	void UpDown(float InputValue);
 	void LeftRight(float InputValue);
@@ -65,6 +71,8 @@ private:
 	float CurrentMP = 60.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxMP = 100.f;
+
+
 
 public:
 	UFUNCTION(BlueprintCallable)
