@@ -63,6 +63,12 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	MainAnim = Cast<UMainCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (MainAnim)
+	{
+		MainAnim->OnMontageEnded.AddDynamic(this, &AMainCharacter::OnAttackMontageEnded);
+	}
+
 }
 
 // Called every frame
@@ -87,6 +93,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::UpDown(float InputValue)
 {
+	if (bIsAttacking)
+		return;
+
 	const FRotator ControllerRotator = Controller->GetControlRotation();
 	const FRotator RotatorYaw = FRotator(0.f, ControllerRotator.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(RotatorYaw).GetUnitAxis(EAxis::X);
@@ -96,6 +105,9 @@ void AMainCharacter::UpDown(float InputValue)
 
 void AMainCharacter::LeftRight(float InputValue)
 {
+	if (bIsAttacking)
+		return;
+
 	const FRotator ControllerRotator = Controller->GetControlRotation();
 	const FRotator RotatorYaw = FRotator(0.f, ControllerRotator.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(RotatorYaw).GetUnitAxis(EAxis::Y);
@@ -105,5 +117,22 @@ void AMainCharacter::LeftRight(float InputValue)
 
 void AMainCharacter::Attack()
 {
+	if (bIsAttacking)
+		return;
+
+	if (MainAnim)
+	{
+		MainAnim->PlayAttackMontage();
+		MainAnim->JumpToSection(AttackSectionIndex);
+		AttackSectionIndex = (AttackSectionIndex + 1) % 4;
+	}
+
+	bIsAttacking = true;
+
+}
+
+void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	bIsAttacking = false;
 }
 

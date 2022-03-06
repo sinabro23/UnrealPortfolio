@@ -30,4 +30,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
+
+public:
+	void PlayAttackMontage();
+	void JumpToSection(int32 MontageSection);
+	FName GetAttackMontageName(int32 MontageSection);
 };

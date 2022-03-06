@@ -34,9 +34,18 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera, Meta = (AllowPrivateAccess = true))
 	class USpringArmComponent* SpringArm;
 
+	UPROPERTY(VisibleAnywhere, Category = Animation, Meta = (AllowPrivateAccess = true))
+	class UMainCharacterAnimInstance* MainAnim;
+
+private:
+	int32 AttackSectionIndex = 0;
+	bool bIsAttacking = false;
 public:
 	void UpDown(float InputValue);
 	void LeftRight(float InputValue);
 
 	void Attack();
+
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

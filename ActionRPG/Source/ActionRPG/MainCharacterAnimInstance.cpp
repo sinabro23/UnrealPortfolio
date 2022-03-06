@@ -30,3 +30,24 @@ void UMainCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 	
 }
+
+void UMainCharacterAnimInstance::PlayAttackMontage()
+{
+	if (AttackMontage)
+	{
+		Montage_Play(AttackMontage, 1.f);
+	}
+}
+
+void UMainCharacterAnimInstance::JumpToSection(int32 MontageSection)
+{
+	FName Name = GetAttackMontageName(MontageSection);
+	Montage_JumpToSection(Name, AttackMontage);
+}
+
+FName UMainCharacterAnimInstance::GetAttackMontageName(int32 MontageSection)
+{
+	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
+}
+
+
