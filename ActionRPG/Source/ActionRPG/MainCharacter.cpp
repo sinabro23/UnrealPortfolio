@@ -182,7 +182,7 @@ void AMainCharacter::AttackHitCheck()
 			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
 
 			FDamageEvent DamageEvent;
-			//HitResult.Actor->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
+			HitResult.Actor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
 		}
 	}
 }

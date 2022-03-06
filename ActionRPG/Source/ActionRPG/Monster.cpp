@@ -79,6 +79,16 @@ void AMonster::PostInitializeComponents()
 	}
 }
 
+float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UE_LOG(LogTemp, Warning, TEXT("Actor %s took Damage %f"), *GetName(), FinalDamage);
+	float TempHP = CurrentHP - DamageAmount;
+	SetHP(TempHP);
+
+	return FinalDamage;
+}
+
 void AMonster::SetHP(float NewHP)
 {
 	CurrentHP = NewHP;

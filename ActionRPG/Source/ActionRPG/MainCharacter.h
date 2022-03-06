@@ -72,6 +72,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxMP = 100.f;
 
+	float AttackDamage = 5.f;
 
 
 public:

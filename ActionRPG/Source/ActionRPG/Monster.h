@@ -28,6 +28,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	UPROPERTY()
@@ -44,6 +45,8 @@ protected:
 public:
 	void SetHP(float NewHP);
 	float GetHPRatio();
+
+
 
 public:
 	FOnHPChangedDelegate OnHPChanged;
