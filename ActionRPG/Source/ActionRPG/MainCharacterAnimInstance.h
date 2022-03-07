@@ -29,11 +29,15 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* EvadeMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
 
 public:
 	void PlayAttackMontage();
+	void PlayEvadeMontage();
 	void JumpToSection(int32 MontageSection);
 	FName GetAttackMontageName(int32 MontageSection);
 

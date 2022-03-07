@@ -42,6 +42,8 @@ private:
 
 private:
 	int32 AttackSectionIndex = 0;
+
+	UPROPERTY(VisibleAnywhere, Meta = (AllowPrivateAccess = true))
 	bool bIsAttacking = false;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
@@ -55,9 +57,11 @@ public:
 
 	void Attack();
 	void AttackHitCheck();
+	void ShiftKey();
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	
 
 	
 	// ½ºÅÈ °ü·Ã

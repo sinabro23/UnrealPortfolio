@@ -13,6 +13,12 @@ UMainCharacterAnimInstance::UMainCharacterAnimInstance()
 	{
 		AttackMontage = AM_ATTACK.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM_EVADE(TEXT("AnimMontage'/Game/_Game/Character/Animation/Evade.Evade'"));
+	if (AM_EVADE.Succeeded())
+	{
+		EvadeMontage = AM_EVADE.Object;
+	}
 }
 
 void UMainCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -36,6 +42,14 @@ void UMainCharacterAnimInstance::PlayAttackMontage()
 	if (AttackMontage)
 	{
 		Montage_Play(AttackMontage, 1.f);
+	}
+}
+
+void UMainCharacterAnimInstance::PlayEvadeMontage()
+{
+	if (EvadeMontage)
+	{
+		Montage_Play(EvadeMontage, 1.f);
 	}
 }
 

@@ -102,6 +102,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AMainCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMainCharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Shift"), EInputEvent::IE_Pressed, this, &AMainCharacter::ShiftKey);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMainCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMainCharacter::LeftRight);
@@ -187,8 +188,25 @@ void AMainCharacter::AttackHitCheck()
 	}
 }
 
+void AMainCharacter::ShiftKey()
+{
+	if (bIsAttacking)
+		return;
+
+	if (MainAnim)
+	{
+		MainAnim->PlayEvadeMontage();
+		SetCanBeDamaged(false);
+		bIsAttacking = true;
+	}
+}
+
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+	if (false == CanBeDamaged())
+	{
+		SetCanBeDamaged(true);
+	}
 	bIsAttacking = false;
 }
 
