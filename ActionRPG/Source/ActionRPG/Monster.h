@@ -41,7 +41,11 @@ public:
 
 	FTimerHandle DeadTimerHandle = {};
 
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* ExclamationMark;
+
 protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float CurrentHP = 50.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
@@ -50,6 +54,9 @@ protected:
 public:
 	void SetHP(float NewHP);
 	float GetHPRatio();
+
+	void FindEnemy();
+	void MissEnemy();
 
 	void Dead();
 

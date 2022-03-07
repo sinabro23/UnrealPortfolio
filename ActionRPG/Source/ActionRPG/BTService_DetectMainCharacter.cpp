@@ -3,6 +3,7 @@
 
 #include "BTService_DetectMainCharacter.h"
 #include "MainCharacter.h"
+#include "Monster.h"	
 #include "MonsterAIController.h"
 #include "DrawDebugHelpers.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -20,6 +21,7 @@ void UBTService_DetectMainCharacter::TickNode(UBehaviorTreeComponent& OwnerComp,
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
 	if (nullptr == ControllingPawn)
 		return;
+	auto Monster = Cast<AMonster>(ControllingPawn);
 
 	UWorld* World = ControllingPawn->GetWorld();
 	FVector Center = ControllingPawn->GetActorLocation();
@@ -48,6 +50,12 @@ void UBTService_DetectMainCharacter::TickNode(UBehaviorTreeComponent& OwnerComp,
 			{
 				if (Character->GetController()->IsPlayerController())
 				{
+					
+					if (Monster)
+					{
+						Monster->FindEnemy();
+					}
+
 					OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, Character);
 					DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.5f);
 					DrawDebugPoint(World, Character->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
@@ -60,5 +68,6 @@ void UBTService_DetectMainCharacter::TickNode(UBehaviorTreeComponent& OwnerComp,
 
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, nullptr);
+	Monster->MissEnemy();
 	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.5f);
 }

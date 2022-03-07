@@ -8,6 +8,7 @@
 #include "Components/WidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "MonsterAnimInstance.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -38,6 +39,16 @@ AMonster::AMonster()
 	}
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Character"));
+
+	ExclamationMark = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EXCLAMATION"));
+	ExclamationMark->SetupAttachment(GetRootComponent());
+	ExclamationMark->SetRelativeLocation(FVector(0.0f, 0.0f, 100.f));
+	ExclamationMark->bAutoActivate = false;
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_EXCLAMATION(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_Quest.P_Status_Quest'"));
+	if (PS_EXCLAMATION.Succeeded())
+	{
+		ExclamationMark->SetTemplate(PS_EXCLAMATION.Object);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -112,6 +123,23 @@ void AMonster::SetHP(float NewHP)
 float AMonster::GetHPRatio()
 {
 	return CurrentHP / MaxHP;
+}
+
+void AMonster::FindEnemy()
+{
+	if (false == ExclamationMark->IsActive())
+	{
+		ExclamationMark->SetActive(true);
+	}
+
+}
+
+void AMonster::MissEnemy()
+{
+	if (true == ExclamationMark->IsActive())
+	{
+		ExclamationMark->Deactivate();
+	}
 }
 
 void AMonster::Dead()
