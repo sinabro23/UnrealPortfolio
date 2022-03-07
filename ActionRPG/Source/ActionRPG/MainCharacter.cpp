@@ -88,6 +88,19 @@ void AMainCharacter::PostInitializeComponents()
 
 }
 
+float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	CurrentHP -= DamageAmount;
+	if (CurrentHP < 0.f)
+	{
+		CurrentHP = 0.0f;
+	}
+
+	return DamageAmount;
+}
+
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {

@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "MonsterAnimInstance.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate)
 /**
  * 
  */
@@ -25,6 +26,8 @@ public:
 	void JumpToSection(int32 MontageSection);
 	FName GetAttackMontageName(int32 MontageSection);
 
+	UFUNCTION()
+	void AnimNotify_AttackHitCheck();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;
@@ -35,5 +38,6 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 
-
+public:
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
 };

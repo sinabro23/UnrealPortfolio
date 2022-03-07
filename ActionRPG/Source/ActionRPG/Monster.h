@@ -6,7 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate)
+DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 
 UCLASS()
 class ACTIONRPG_API AMonster : public ACharacter
@@ -56,12 +57,22 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FString MonsterName;
 
+	bool bIsAttacking = false;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	float AttackRange;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	float AttackRadius;
+
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float CurrentHP = 50.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxHP = 50.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float AttackDamage = 10.f;
 	// 피관련되는건 무조건 SetHP로 호출
 public:
 	void SetHP(float NewHP);
@@ -75,6 +86,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetMonsterName();
 
+	void Attack();
+	int32 AttackSectionIndex = 0;
+
+	void AttackHitCheck();
+
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 public:
 	FOnHPChangedDelegate OnHPChanged;
+	FOnAttackEndDelegate OnAttackEnd;
 };
