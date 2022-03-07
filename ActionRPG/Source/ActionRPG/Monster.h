@@ -36,6 +36,11 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* HPBar;
 
+	UPROPERTY(VisibleAnywhere)
+	class UMonsterAnimInstance* MonsterAnim;
+
+	FTimerHandle DeadTimerHandle = {};
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float CurrentHP = 50.f;
@@ -46,7 +51,7 @@ public:
 	void SetHP(float NewHP);
 	float GetHPRatio();
 
-
+	void Dead();
 
 public:
 	FOnHPChangedDelegate OnHPChanged;

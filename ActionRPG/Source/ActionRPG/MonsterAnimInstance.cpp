@@ -23,3 +23,8 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		CurrentPawnSpeed = Monster->GetVelocity().Size();
 	}
 }
+
+void UMonsterAnimInstance::SetDeadAnim()
+{
+	bIsDead = true;
+}

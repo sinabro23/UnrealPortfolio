@@ -7,6 +7,7 @@
 #include "MonsterHealthbarWidget.h"
 #include "Components/WidgetComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "MonsterAnimInstance.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -77,6 +78,12 @@ void AMonster::PostInitializeComponents()
 	{
 		HPWidget->BindHP(this);
 	}
+
+	auto Anim = GetMesh()->GetAnimInstance();
+	if (Anim)
+	{
+		MonsterAnim = Cast<UMonsterAnimInstance>(Anim);
+	}
 }
 
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -93,7 +100,11 @@ void AMonster::SetHP(float NewHP)
 {
 	CurrentHP = NewHP;
 	if (CurrentHP < 0)
+	{
 		CurrentHP = 0;
+		Dead();
+	}
+	
 
 	OnHPChanged.Broadcast();
 }
@@ -101,6 +112,20 @@ void AMonster::SetHP(float NewHP)
 float AMonster::GetHPRatio()
 {
 	return CurrentHP / MaxHP;
+}
+
+void AMonster::Dead()
+{
+	SetActorEnableCollision(false);
+	GetMovementBase()->SetHiddenInGame(false);
+	HPBar->SetHiddenInGame(true);
+	MonsterAnim->SetDeadAnim();
+	SetCanBeDamaged(false);
+	MonsterAIController->StopAI();
+
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
+		Destroy();
+	}), 5.f, false);
 }
 
 

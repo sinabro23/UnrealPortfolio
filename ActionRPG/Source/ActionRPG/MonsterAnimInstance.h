@@ -18,7 +18,13 @@ public:
 	UMonsterAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+public:
+	void SetDeadAnim();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool bIsDead = false;
 };

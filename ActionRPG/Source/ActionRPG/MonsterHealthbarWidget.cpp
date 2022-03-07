@@ -18,3 +18,4 @@ void UMonsterHealthbarWidget::UpdateHP()
 		PB_HPBar->SetPercent(CurrentMonster->GetHPRatio());
 	}
 }
+

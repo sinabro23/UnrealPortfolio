@@ -19,9 +19,11 @@ public:
 
 	void UpdateHP();
 
+
 private:
 	UPROPERTY(Meta = (BindWidget))
 	class UProgressBar* PB_HPBar;
 
 	TWeakObjectPtr<class AMonster> CurrentMonster;
+
 };
