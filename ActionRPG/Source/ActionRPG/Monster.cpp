@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "MonsterAnimInstance.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "MonsterNameWidget.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -38,17 +39,30 @@ AMonster::AMonster()
 		HPBar->SetDrawSize(FVector2D(300.f, 50.f));
 	}
 
+	NameBox = CreateDefaultSubobject<UWidgetComponent>(TEXT("NAMEBOX"));
+	NameBox->SetupAttachment(HPBar);
+	NameBox->SetWidgetSpace(EWidgetSpace::Screen);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UW_NAMEBOX(TEXT("WidgetBlueprint'/Game/_Game/UI/Monster/MonsterName.MonsterName_C'"));
+	if (UW_NAMEBOX.Succeeded())
+	{
+		NameBox->SetWidgetClass(UW_NAMEBOX.Class);
+		NameBox->SetDrawSize(FVector2D(300.f, 20.f));
+	}
+
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Character"));
 
 	ExclamationMark = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EXCLAMATION"));
 	ExclamationMark->SetupAttachment(GetRootComponent());
-	ExclamationMark->SetRelativeLocation(FVector(0.0f, 0.0f, 100.f));
+	ExclamationMark->SetRelativeLocation(FVector(0.0f, 0.0f, ExclamationMarkHeight));
 	ExclamationMark->bAutoActivate = false;
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_EXCLAMATION(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_Quest.P_Status_Quest'"));
 	if (PS_EXCLAMATION.Succeeded())
 	{
 		ExclamationMark->SetTemplate(PS_EXCLAMATION.Object);
 	}
+
+	MonsterName = FString(TEXT("NONE"));
 }
 
 // Called when the game starts or when spawned
@@ -90,6 +104,13 @@ void AMonster::PostInitializeComponents()
 		HPWidget->BindHP(this);
 	}
 
+	NameBox->InitWidget();
+	auto NameBoxWidget = Cast<UMonsterNameWidget>(NameBox->GetUserWidgetObject());
+	if (NameBoxWidget)
+	{
+		NameBoxWidget->BindName(this);
+	}
+
 	auto Anim = GetMesh()->GetAnimInstance();
 	if (Anim)
 	{
@@ -100,7 +121,7 @@ void AMonster::PostInitializeComponents()
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	UE_LOG(LogTemp, Warning, TEXT("Actor %s took Damage %f"), *GetName(), FinalDamage);
+	//UE_LOG(LogTemp, Warning, TEXT("Actor %s took Damage %f"), *GetName(), FinalDamage);
 	float TempHP = CurrentHP - DamageAmount;
 	SetHP(TempHP);
 
@@ -154,6 +175,11 @@ void AMonster::Dead()
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
 		Destroy();
 	}), 5.f, false);
+}
+
+FString AMonster::GetMonsterName()
+{
+	return MonsterName;
 }
 
 

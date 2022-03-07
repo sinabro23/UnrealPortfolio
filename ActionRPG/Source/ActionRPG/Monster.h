@@ -36,6 +36,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* HPBar;
 
+	UPROPERTY(EditDefaultsOnly)
+	class UWidgetComponent* NameBox;
+
 	UPROPERTY(VisibleAnywhere)
 	class UMonsterAnimInstance* MonsterAnim;
 
@@ -43,8 +46,16 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* ExclamationMark;
+	
+	UPROPERTY(EditDefaultsOnly)
+	float ExclamationMarkHeight = 100.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString MonsterName;
 
 protected:
+	
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float CurrentHP = 50.f;
@@ -59,6 +70,9 @@ public:
 	void MissEnemy();
 
 	void Dead();
+
+	UFUNCTION(BlueprintCallable)
+	FString GetMonsterName();
 
 public:
 	FOnHPChangedDelegate OnHPChanged;
