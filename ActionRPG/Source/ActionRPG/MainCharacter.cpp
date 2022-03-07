@@ -25,6 +25,8 @@ AMainCharacter::AMainCharacter()
 	GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -88.f));
 	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.f, 0.0f));
 
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MainCharacter"));
+
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 
@@ -35,6 +37,7 @@ AMainCharacter::AMainCharacter()
 	SpringArm->bUsePawnControlRotation = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+
 
 	// 애님인스턴스관련
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -61,7 +64,7 @@ AMainCharacter::AMainCharacter()
 		AttackSound = SC_ATTACK.Object;
 	}
 
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Character"));
+
 
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
@@ -91,6 +94,9 @@ void AMainCharacter::PostInitializeComponents()
 float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (!CharacterCanBeDamaged)
+		return 0;
 
 	CurrentHP -= DamageAmount;
 	if (CurrentHP < 0.f)
@@ -186,7 +192,7 @@ void AMainCharacter::AttackHitCheck()
 		GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
 		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2,
+		ECollisionChannel::ECC_GameTraceChannel4,
 		FCollisionShape::MakeSphere(AttackRadius),
 		Params);
 
@@ -234,16 +240,16 @@ void AMainCharacter::ShiftKey()
 	if (MainAnim)
 	{
 		MainAnim->PlayEvadeMontage();
-		SetCanBeDamaged(false);
+		CharacterCanBeDamaged = false;
 		bIsAttacking = true;
 	}
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (false == CanBeDamaged())
+	if (CharacterCanBeDamaged)
 	{
-		SetCanBeDamaged(true);
+		CharacterCanBeDamaged = true;
 	}
 	bIsAttacking = false;
 }

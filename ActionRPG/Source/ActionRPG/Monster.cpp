@@ -50,7 +50,7 @@ AMonster::AMonster()
 		NameBox->SetDrawSize(FVector2D(300.f, 20.f));
 	}
 
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Character"));
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MonsterCharacter"));
 
 	ExclamationMark = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EXCLAMATION"));
 	ExclamationMark->SetupAttachment(GetRootComponent());
@@ -87,7 +87,6 @@ void AMonster::BeginPlay()
 	{
 		MonsterAIController->RunAI();
 	}
-	
 	
 }
 
