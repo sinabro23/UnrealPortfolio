@@ -21,10 +21,19 @@ public:
 public:
 	void SetDeadAnim();
 
+	void PlayAttackMontage();
+	void JumpToSection(int32 MontageSection);
+	FName GetAttackMontageName(int32 MontageSection);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bIsDead = false;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* AttackMontage;
+
+
 };

@@ -6,7 +6,11 @@
 
 UMonsterAnimInstance::UMonsterAnimInstance()
 {
-
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM_ATTACK(TEXT("AnimMontage'/Game/_Game/Monster/Troll/Animation/AttackMontage.AttackMontage'"));
+	if (AM_ATTACK.Succeeded())
+	{
+		AttackMontage = AM_ATTACK.Object;
+	}
 }
 
 void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -27,4 +31,24 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 void UMonsterAnimInstance::SetDeadAnim()
 {
 	bIsDead = true;
+}
+
+
+void UMonsterAnimInstance::PlayAttackMontage()
+{
+	if (AttackMontage)
+	{
+		Montage_Play(AttackMontage, 1.f);
+	}
+}
+
+void UMonsterAnimInstance::JumpToSection(int32 MontageSection)
+{
+	FName Name = GetAttackMontageName(MontageSection);
+	Montage_JumpToSection(Name, AttackMontage);
+}
+
+FName UMonsterAnimInstance::GetAttackMontageName(int32 MontageSection)
+{
+	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
 }
