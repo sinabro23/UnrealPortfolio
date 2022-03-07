@@ -154,18 +154,28 @@ void AMainCharacter::Attack()
 
 void AMainCharacter::AttackHitCheck()
 {
-	FHitResult HitResult;
-	FCollisionQueryParams Params(NAME_None, false, this);
+	//FHitResult HitResult;
+	//FCollisionQueryParams Params(NAME_None, false, this);
 
-	bool bResult = GetWorld()->SweepSingleByChannel(
-		HitResult,
+	//bool bResult = GetWorld()->SweepSingleByChannel(
+	//	HitResult,
+	//	GetActorLocation(),
+	//	GetActorLocation() + GetActorForwardVector() * AttackRange,
+	//	FQuat::Identity,
+	//	ECollisionChannel::ECC_GameTraceChannel2,
+	//	FCollisionShape::MakeSphere(AttackRadius),
+	//	Params);
+
+	TArray<FHitResult> HitResults;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepMultiByChannel(
+		HitResults,
 		GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel2,
 		FCollisionShape::MakeSphere(AttackRadius),
 		Params);
-
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
@@ -176,14 +186,29 @@ void AMainCharacter::AttackHitCheck()
 	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
 
 
+	//if (bResult)
+	//{
+
+	//	if (HitResult.Actor.IsValid())
+	//	{
+	//		//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+
+	//		FDamageEvent DamageEvent;
+	//		HitResult.Actor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+	//	}
+	//}
+
 	if (bResult)
 	{
-		if (HitResult.Actor.IsValid())
+		for (auto HitResult : HitResults)
 		{
+			if (HitResult.Actor.IsValid())
+			{
 			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
 
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+			}
 		}
 	}
 }
