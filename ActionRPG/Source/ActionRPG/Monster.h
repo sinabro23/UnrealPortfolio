@@ -54,8 +54,6 @@ public:
 	FString MonsterName;
 
 protected:
-	
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float CurrentHP = 50.f;

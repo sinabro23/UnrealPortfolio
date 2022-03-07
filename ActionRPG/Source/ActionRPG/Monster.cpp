@@ -168,8 +168,10 @@ void AMonster::Dead()
 	SetActorEnableCollision(false);
 	GetMovementBase()->SetHiddenInGame(false);
 	HPBar->SetHiddenInGame(true);
+	NameBox->SetHiddenInGame(true);
 	MonsterAnim->SetDeadAnim();
 	SetCanBeDamaged(false);
+	MissEnemy();
 	MonsterAIController->StopAI();
 
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
