@@ -46,6 +46,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* ExclamationMark;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* BloodParitcle;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float ExclamationMarkHeight = 100.f;

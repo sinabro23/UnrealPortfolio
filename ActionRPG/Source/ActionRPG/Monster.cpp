@@ -62,6 +62,15 @@ AMonster::AMonster()
 		ExclamationMark->SetTemplate(PS_EXCLAMATION.Object);
 	}
 
+	BloodParitcle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BLOOD"));
+	BloodParitcle->SetupAttachment(GetRootComponent());
+	BloodParitcle->bAutoActivate = false;
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_BLOOD(TEXT("ParticleSystem'/Game/_Game/FX/P_Blood_Splat_Cone.P_Blood_Splat_Cone'"));
+	if (PS_BLOOD.Succeeded())
+	{
+		BloodParitcle->SetTemplate(PS_BLOOD.Object);
+	}
+
 	MonsterName = FString(TEXT("NONE"));
 }
 
@@ -125,6 +134,11 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	float TempHP = CurrentHP - DamageAmount;
 	SetHP(TempHP);
 
+	if (BloodParitcle)
+	{
+		BloodParitcle->Activate();
+	}
+	
 	return FinalDamage;
 }
 
