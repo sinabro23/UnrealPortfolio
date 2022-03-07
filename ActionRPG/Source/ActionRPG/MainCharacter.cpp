@@ -173,18 +173,6 @@ void AMainCharacter::Attack()
 
 void AMainCharacter::AttackHitCheck()
 {
-	//FHitResult HitResult;
-	//FCollisionQueryParams Params(NAME_None, false, this);
-
-	//bool bResult = GetWorld()->SweepSingleByChannel(
-	//	HitResult,
-	//	GetActorLocation(),
-	//	GetActorLocation() + GetActorForwardVector() * AttackRange,
-	//	FQuat::Identity,
-	//	ECollisionChannel::ECC_GameTraceChannel2,
-	//	FCollisionShape::MakeSphere(AttackRadius),
-	//	Params);
-
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepMultiByChannel(
@@ -204,6 +192,26 @@ void AMainCharacter::AttackHitCheck()
 	float DebugLifeTime = 5.f;
 	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
 
+#pragma region SingleAttack
+	//FHitResult HitResult;
+	//FCollisionQueryParams Params(NAME_None, false, this);
+
+	//bool bResult = GetWorld()->SweepSingleByChannel(
+	//	HitResult,
+	//	GetActorLocation(),
+	//	GetActorLocation() + GetActorForwardVector() * AttackRange,
+	//	FQuat::Identity,
+	//	ECollisionChannel::ECC_GameTraceChannel2,
+	//	FCollisionShape::MakeSphere(AttackRadius),
+	//	Params);
+
+	//FVector TraceVec = GetActorForwardVector() * AttackRange;
+	//FVector Center = GetActorLocation() + TraceVec * 0.5f;
+	//float HalfHeight = AttackRange * 0.5f + AttackRadius;  // ?
+	//FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat(); // ?
+	//FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	//float DebugLifeTime = 5.f;
+	//DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
 
 	//if (bResult)
 	//{
@@ -216,6 +224,8 @@ void AMainCharacter::AttackHitCheck()
 	//		HitResult.Actor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
 	//	}
 	//}
+
+#pragma endregion
 
 	if (bResult)
 	{
@@ -234,8 +244,9 @@ void AMainCharacter::AttackHitCheck()
 
 void AMainCharacter::ShiftKey()
 {
-	if (bIsAttacking)
+	if (bIsAttacking || GetMovementComponent()->IsFalling())
 		return;
+
 
 	if (MainAnim)
 	{
@@ -247,7 +258,7 @@ void AMainCharacter::ShiftKey()
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (CharacterCanBeDamaged)
+	if (!CharacterCanBeDamaged)
 	{
 		CharacterCanBeDamaged = true;
 	}
