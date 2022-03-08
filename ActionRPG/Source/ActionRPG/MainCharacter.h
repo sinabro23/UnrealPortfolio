@@ -56,7 +56,7 @@ private:
 	bool CharacterCanBeDamaged = true;
 
 	bool bIsLockOn = false;
-	float LockOnRange = 1000.f;
+	float LockOnRange = 500.f;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	TWeakObjectPtr<class AMonster> CurrentTargetMonster;

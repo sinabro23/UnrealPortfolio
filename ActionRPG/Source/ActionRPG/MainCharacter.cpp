@@ -114,24 +114,33 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsLockOn && CurrentTargetMonster.IsValid())
+	if (bIsLockOn)
 	{
-		float Distance = (GetActorLocation() - CurrentTargetMonster->GetActorLocation()).Size();
-		if (Distance >= LockOnRange)
+		if (CurrentTargetMonster.IsValid())
+		{
+			float Distance = (GetActorLocation() - CurrentTargetMonster->GetActorLocation()).Size();
+			if (Distance >= LockOnRange)
+			{
+				bIsLockOn = false;
+				if (CurrentTargetMonster.IsValid())
+				{
+					CurrentTargetMonster->LockOff();
+					CurrentTargetMonster = nullptr;
+				}
+				return;
+			}
+
+			FRotator LookAtRotation = GetLookAtRotationYaw(CurrentTargetMonster->GetActorLocation());
+			LockOnLookAtRotation = FRotator(GetControlRotation().Pitch, LookAtRotation.Yaw, 0.f);
+
+			GetController()->SetControlRotation(LockOnLookAtRotation);
+		}
+		else
 		{
 			bIsLockOn = false;
-			if (CurrentTargetMonster.IsValid())
-			{
-				CurrentTargetMonster->LockOff();
-				CurrentTargetMonster = nullptr;
-			}
-			return;
+			CurrentTargetMonster = nullptr;
 		}
-
-		FRotator LookAtRotation = GetLookAtRotationYaw(CurrentTargetMonster->GetActorLocation());
-		LockOnLookAtRotation = FRotator(GetControlRotation().Pitch, LookAtRotation.Yaw, 0.f);
-
-		GetController()->SetControlRotation(LockOnLookAtRotation);
+	
 	}
 }
 
