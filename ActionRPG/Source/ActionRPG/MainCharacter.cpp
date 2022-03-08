@@ -12,6 +12,9 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Monster.h"
+#include "TimerManager.h"
+#include "MainPlayerController.h"
+
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
@@ -102,9 +105,10 @@ float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		return 0;
 
 	CurrentHP -= DamageAmount;
-	if (CurrentHP < 0.f)
+	if (CurrentHP <= 0.f)
 	{
 		CurrentHP = 0.0f;
+		Dead();
 	}
 
 	return DamageAmount;
@@ -169,9 +173,16 @@ void AMainCharacter::AddControllerYawInput(float Val)
 	Super::AddControllerYawInput(Val);
 }
 
+void AMainCharacter::Jump()
+{
+	if (bIsDead)
+		return;
+	Super::Jump();
+}
+
 void AMainCharacter::UpDown(float InputValue)
 {
-	if (bIsAttacking)
+	if (bIsAttacking || bIsDead)
 		return;
 
 	const FRotator ControllerRotator = Controller->GetControlRotation();
@@ -183,7 +194,7 @@ void AMainCharacter::UpDown(float InputValue)
 
 void AMainCharacter::LeftRight(float InputValue)
 {
-	if (bIsAttacking)
+	if (bIsAttacking || bIsDead)
 		return;
 
 	const FRotator ControllerRotator = Controller->GetControlRotation();
@@ -204,7 +215,7 @@ void AMainCharacter::CameraZoom(float InputValue)
 
 void AMainCharacter::Attack()
 {
-	if (bIsAttacking)
+	if (bIsAttacking || bIsDead)
 		return;
 
 	if (MainAnim)
@@ -321,6 +332,8 @@ void AMainCharacter::LockOn()
 	}
 	else
 	{
+		if (bIsDead)
+			return;
 		UWorld* World = GetWorld();
 		FVector Center = GetActorLocation() + Camera->GetForwardVector() * 500.f;
 		float DetectRadius = LockOnRange;
@@ -377,6 +390,28 @@ void AMainCharacter::LockOn()
 
 		DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.5f);
 	}
+}
+
+void AMainCharacter::Dead()
+{
+	if (MainAnim)
+	{
+		MainAnim->SetDeadAnim();
+	}
+
+	bIsDead = true;
+	SetActorEnableCollision(false);
+	SetCanBeDamaged(false);
+
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
+
+		auto PlayerController = Cast<AMainPlayerController>(GetController());
+		if (PlayerController)
+		{
+			PlayerController->RestartLevel();
+		}
+
+	}), 10.f, false);
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

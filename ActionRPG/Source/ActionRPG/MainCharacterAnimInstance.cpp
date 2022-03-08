@@ -64,6 +64,11 @@ FName UMainCharacterAnimInstance::GetAttackMontageName(int32 MontageSection)
 	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
 }
 
+void UMainCharacterAnimInstance::SetDeadAnim()
+{
+	bIsDead = true;
+}
+
 void UMainCharacterAnimInstance::AnimNotify_AttackCheck()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AttackCheck"));

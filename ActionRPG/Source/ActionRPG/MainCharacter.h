@@ -27,6 +27,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void AddControllerYawInput(float Val) override;
+	virtual void Jump()override;
 
 private:
 
@@ -63,6 +64,10 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FRotator LockOnLookAtRotation;
+
+	FTimerHandle DeadTimerHandle;
+
+	bool bIsDead = false;
 protected:
 	// 카메라 줌 관련
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
@@ -85,6 +90,7 @@ public:
 
 	void LockOn();
 
+	void Dead();
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
