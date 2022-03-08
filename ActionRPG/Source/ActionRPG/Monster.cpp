@@ -36,7 +36,7 @@ AMonster::AMonster()
 	if (UW_HPBAR.Succeeded())
 	{
 		HPBar->SetWidgetClass(UW_HPBAR.Class);
-		HPBar->SetDrawSize(FVector2D(300.f, 50.f));
+		HPBar->SetDrawSize(FVector2D(250.f, 60.f));
 	}
 
 	NameBox = CreateDefaultSubobject<UWidgetComponent>(TEXT("NAMEBOX"));
@@ -47,7 +47,7 @@ AMonster::AMonster()
 	if (UW_NAMEBOX.Succeeded())
 	{
 		NameBox->SetWidgetClass(UW_NAMEBOX.Class);
-		NameBox->SetDrawSize(FVector2D(300.f, 20.f));
+		NameBox->SetDrawSize(FVector2D(250.f, 20.f));
 	}
 			
 

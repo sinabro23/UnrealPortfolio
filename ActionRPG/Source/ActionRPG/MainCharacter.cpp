@@ -35,6 +35,7 @@ AMainCharacter::AMainCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	SpringArm->TargetArmLength = DeafaultSpinrgArmLength;
+	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 50.f));
 	SpringArm->bUsePawnControlRotation = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
@@ -119,7 +120,7 @@ void AMainCharacter::Tick(float DeltaTime)
 		if (CurrentTargetMonster.IsValid())
 		{
 			float Distance = (GetActorLocation() - CurrentTargetMonster->GetActorLocation()).Size();
-			if (Distance >= LockOnRange)
+			if (Distance >= 1000.f)
 			{
 				bIsLockOn = false;
 				if (CurrentTargetMonster.IsValid())
@@ -320,10 +321,8 @@ void AMainCharacter::LockOn()
 	}
 	else
 	{
-		float Distance = 0.f;
-
 		UWorld* World = GetWorld();
-		FVector Center = GetActorLocation();
+		FVector Center = GetActorLocation() + Camera->GetForwardVector() * 500.f;
 		float DetectRadius = LockOnRange;
 
 		if (nullptr == World)
@@ -347,22 +346,27 @@ void AMainCharacter::LockOn()
 				auto Monster = Cast<AMonster>(OverlapResult.GetActor());
 				if (Monster)
 				{
-					float NewDistance = (GetActorLocation() - Monster->GetActorLocation()).Size();
-					if (NewDistance < Distance)
-					{
-						CurrentTargetMonster = Monster;
-						Distance = NewDistance;
-					}
-					Distance = (GetActorLocation() - Monster->GetActorLocation()).Size();
-
 					DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.5f);
 					DrawDebugPoint(World, Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
 					DrawDebugLine(World, Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
 					bIsLockOn = true;
 
-					CurrentTargetMonster = Monster;
+					float MonsterDistance = (Monster->GetActorLocation() - GetActorLocation()).Size();
+					if (CurrentTargetMonster.IsValid())
+					{
+						float CurrentTargetDistance = (CurrentTargetMonster->GetActorLocation() - GetActorLocation()).Size();
+						if (MonsterDistance < CurrentTargetDistance)
+						{
+							CurrentTargetMonster = Monster;
+						}
+					}
+					else
+					{
+						CurrentTargetMonster = Monster;
+					}
 				}
 			}
+
 			if (CurrentTargetMonster.IsValid())
 			{
 				CurrentTargetMonster->LockOn();

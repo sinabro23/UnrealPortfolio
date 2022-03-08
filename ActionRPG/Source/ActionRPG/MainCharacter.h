@@ -56,7 +56,7 @@ private:
 	bool CharacterCanBeDamaged = true;
 
 	bool bIsLockOn = false;
-	float LockOnRange = 500.f;
+	float LockOnRange = 700.f;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	TWeakObjectPtr<class AMonster> CurrentTargetMonster;
@@ -66,7 +66,7 @@ private:
 protected:
 	// 카메라 줌 관련
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
-	float MinSpringArmLength = 50.f;
+	float MinSpringArmLength = 100.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	float MaxSpringArmLength = 1000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
