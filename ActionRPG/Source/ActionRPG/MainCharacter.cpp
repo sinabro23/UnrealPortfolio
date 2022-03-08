@@ -334,21 +334,16 @@ void AMainCharacter::LockOn()
 	{
 		if (bIsDead)
 			return;
-		UWorld* World = GetWorld();
+
 		FVector Center = GetActorLocation() + Camera->GetForwardVector() * 500.f;
-		float DetectRadius = LockOnRange;
-
-		if (nullptr == World)
-			return;
-
 		TArray<FOverlapResult> OverlapResults;
 		FCollisionQueryParams CollsionQueryParam(NAME_None, false, this);
-		bool bResult = World->OverlapMultiByChannel(
+		bool bResult = GetWorld()->OverlapMultiByChannel(
 			OverlapResults,
 			Center,
 			FQuat::Identity,
 			ECollisionChannel::ECC_GameTraceChannel4,
-			FCollisionShape::MakeSphere(DetectRadius),
+			FCollisionShape::MakeSphere(LockOnRange),
 			CollsionQueryParam
 		);
 
@@ -359,9 +354,9 @@ void AMainCharacter::LockOn()
 				auto Monster = Cast<AMonster>(OverlapResult.GetActor());
 				if (Monster)
 				{
-					DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.5f);
-					DrawDebugPoint(World, Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
-					DrawDebugLine(World, Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
+					DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Green, false, 0.5f);
+					DrawDebugPoint(GetWorld(), Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
+					DrawDebugLine(GetWorld(), Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
 					bIsLockOn = true;
 
 					float MonsterDistance = (Monster->GetActorLocation() - GetActorLocation()).Size();
@@ -388,7 +383,7 @@ void AMainCharacter::LockOn()
 			return;
 		}
 
-		DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.5f);
+		DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Red, false, 0.5f);
 	}
 }
 
