@@ -34,6 +34,7 @@ public:
 public:
 	UPROPERTY()
 	class AMonsterAIController* MonsterAIController;
+
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* HPBar;
 
@@ -50,6 +51,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* BloodParitcle;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* LockOnParticle;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float ExclamationMarkHeight = 100.f;
@@ -91,6 +95,9 @@ public:
 	int32 AttackSectionIndex = 0;
 
 	void AttackHitCheck();
+
+	void LockOn();
+	void LockOff();
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);

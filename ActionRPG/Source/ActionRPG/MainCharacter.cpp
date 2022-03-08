@@ -8,9 +8,10 @@
 #include "MainCharacterAnimInstance.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
-
+#include "Monster.h"
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
@@ -64,17 +65,18 @@ AMainCharacter::AMainCharacter()
 		AttackSound = SC_ATTACK.Object;
 	}
 
-
-
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
+
+	LockOnLookAtRotation = FRotator(0.0f);
 }
 
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	LockOnLookAtRotation = FRotator(GetActorRotation());
 }
 
 void AMainCharacter::PostInitializeComponents()
@@ -112,6 +114,25 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bIsLockOn && CurrentTargetMonster.IsValid())
+	{
+		float Distance = (GetActorLocation() - CurrentTargetMonster->GetActorLocation()).Size();
+		if (Distance >= LockOnRange)
+		{
+			bIsLockOn = false;
+			if (CurrentTargetMonster.IsValid())
+			{
+				CurrentTargetMonster->LockOff();
+				CurrentTargetMonster = nullptr;
+			}
+			return;
+		}
+
+		FRotator LookAtRotation = GetLookAtRotationYaw(CurrentTargetMonster->GetActorLocation());
+		LockOnLookAtRotation = FRotator(GetControlRotation().Pitch, LookAtRotation.Yaw, 0.f);
+
+		GetController()->SetControlRotation(LockOnLookAtRotation);
+	}
 }
 
 // Called to bind functionality to input
@@ -126,9 +147,16 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMainCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMainCharacter::LeftRight);
-	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AMainCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis(TEXT("MouseWheel"), this, &AMainCharacter::CameraZoom);
+}
+
+void AMainCharacter::AddControllerYawInput(float Val)
+{
+	if (bIsLockOn)
+		return;
+	Super::AddControllerYawInput(Val);
 }
 
 void AMainCharacter::UpDown(float InputValue)
@@ -171,6 +199,10 @@ void AMainCharacter::Attack()
 
 	if (MainAnim)
 	{
+		if (bIsLockOn)
+		{
+			SetActorRotation(FRotator(0.f, LockOnLookAtRotation.Yaw, 0.f));
+		}
 		UGameplayStatics::PlaySound2D(GetWorld(), AttackSound);
 
 		MainAnim->PlayAttackMontage();
@@ -269,7 +301,69 @@ void AMainCharacter::ShiftKey()
 
 void AMainCharacter::LockOn()
 {
-	
+	if (bIsLockOn)
+	{
+		if (CurrentTargetMonster.IsValid())
+		{
+			CurrentTargetMonster->LockOff();
+		}
+		bIsLockOn = false;
+	}
+	else
+	{
+		float Distance = 0.f;
+
+		UWorld* World = GetWorld();
+		FVector Center = GetActorLocation();
+		float DetectRadius = LockOnRange;
+
+		if (nullptr == World)
+			return;
+
+		TArray<FOverlapResult> OverlapResults;
+		FCollisionQueryParams CollsionQueryParam(NAME_None, false, this);
+		bool bResult = World->OverlapMultiByChannel(
+			OverlapResults,
+			Center,
+			FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel4,
+			FCollisionShape::MakeSphere(DetectRadius),
+			CollsionQueryParam
+		);
+
+		if (bResult)
+		{
+			for (auto const& OverlapResult : OverlapResults)
+			{
+				auto Monster = Cast<AMonster>(OverlapResult.GetActor());
+				if (Monster)
+				{
+					float NewDistance = (GetActorLocation() - Monster->GetActorLocation()).Size();
+					if (NewDistance < Distance)
+					{
+						CurrentTargetMonster = Monster;
+						Distance = NewDistance;
+					}
+					Distance = (GetActorLocation() - Monster->GetActorLocation()).Size();
+
+					DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.5f);
+					DrawDebugPoint(World, Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
+					DrawDebugLine(World, Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
+					bIsLockOn = true;
+
+					CurrentTargetMonster = Monster;
+				}
+			}
+			if (CurrentTargetMonster.IsValid())
+			{
+				CurrentTargetMonster->LockOn();
+			}
+		
+			return;
+		}
+
+		DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.5f);
+	}
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -279,5 +373,12 @@ void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupt
 		CharacterCanBeDamaged = true;
 	}
 	bIsAttacking = false;
+}
+
+FRotator AMainCharacter::GetLookAtRotationYaw(FVector TargetVector)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetVector);
+	FRotator LookAtRotationYaw(0.f, LookAtRotation.Yaw, 0.f);
+	return LookAtRotationYaw;
 }
 

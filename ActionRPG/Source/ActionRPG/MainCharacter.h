@@ -26,6 +26,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void AddControllerYawInput(float Val) override;
 
 private:
 
@@ -40,7 +41,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
 	class USoundCue* AttackSound;
 
-	TWeakObjectPtr<class AMonster> CurrentTargetMonster;
 
 private:
 	int32 AttackSectionIndex = 0;
@@ -55,6 +55,14 @@ private:
 
 	bool CharacterCanBeDamaged = true;
 
+	bool bIsLockOn = false;
+	float LockOnRange = 1000.f;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	TWeakObjectPtr<class AMonster> CurrentTargetMonster;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FRotator LockOnLookAtRotation;
 protected:
 	// Ä«¸Þ¶ó ÁÜ °ü·Ã
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
@@ -81,6 +89,7 @@ public:
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	
+	FRotator GetLookAtRotationYaw(FVector TargetVector);
 
 	
 	// ½ºÅÈ °ü·Ã

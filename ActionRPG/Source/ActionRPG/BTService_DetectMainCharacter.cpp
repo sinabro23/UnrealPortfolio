@@ -57,9 +57,9 @@ void UBTService_DetectMainCharacter::TickNode(UBehaviorTreeComponent& OwnerComp,
 					}
 
 					OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, Character);
-					DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.5f);
-					DrawDebugPoint(World, Character->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
-					DrawDebugLine(World, Center, Character->GetActorLocation(), FColor::Blue, false, 0.5f);
+					//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.5f);
+					//DrawDebugPoint(World, Character->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
+					//DrawDebugLine(World, Center, Character->GetActorLocation(), FColor::Blue, false, 0.5f);
 					return;
 				}
 			}
@@ -69,5 +69,5 @@ void UBTService_DetectMainCharacter::TickNode(UBehaviorTreeComponent& OwnerComp,
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMonsterAIController::TargetKey, nullptr);
 	Monster->MissEnemy();
-	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.5f);
+	//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.5f);
 }

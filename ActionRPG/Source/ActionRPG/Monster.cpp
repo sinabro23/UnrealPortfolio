@@ -49,13 +49,16 @@ AMonster::AMonster()
 		NameBox->SetWidgetClass(UW_NAMEBOX.Class);
 		NameBox->SetDrawSize(FVector2D(300.f, 20.f));
 	}
+			
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MonsterCharacter"));
 
 	ExclamationMark = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EXCLAMATION"));
 	ExclamationMark->SetupAttachment(GetRootComponent());
 	ExclamationMark->SetRelativeLocation(FVector(0.0f, 0.0f, ExclamationMarkHeight));
-	ExclamationMark->bAutoActivate = false;
+	ExclamationMark->bAutoActivate = true;
+	ExclamationMark->SetVisibility(false);
+
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_EXCLAMATION(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_Quest.P_Status_Quest'"));
 	if (PS_EXCLAMATION.Succeeded())
 	{
@@ -69,6 +72,17 @@ AMonster::AMonster()
 	if (PS_BLOOD.Succeeded())
 	{
 		BloodParitcle->SetTemplate(PS_BLOOD.Object);
+	}
+
+	LockOnParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LOCKONPARTICLE"));
+	LockOnParticle->SetupAttachment(GetMesh());
+	LockOnParticle->bAutoActivate = true;
+	LockOnParticle->SetVisibility(false);
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_LOCKON(TEXT("ParticleSystem'/Game/_Game/FX/P_Targeting_Player_Select.P_Targeting_Player_Select'"));
+	if (PS_LOCKON.Succeeded())
+	{
+		LockOnParticle->SetTemplate(PS_LOCKON.Object);
 	}
 
 	MonsterName = FString(TEXT("NONE"));
@@ -87,7 +101,8 @@ void AMonster::BeginPlay()
 	{
 		MonsterAIController->RunAI();
 	}
-	
+
+
 }
 
 // Called every frame
@@ -122,6 +137,7 @@ void AMonster::PostInitializeComponents()
 		NameBoxWidget->BindName(this);
 	}
 
+
 	auto Anim = GetMesh()->GetAnimInstance();
 	if (Anim)
 	{
@@ -145,7 +161,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 	if (BloodParitcle)
 	{
-		BloodParitcle->Activate();
+		BloodParitcle->Activate(true);
 	}
 	
 	return FinalDamage;
@@ -169,22 +185,7 @@ float AMonster::GetHPRatio()
 	return CurrentHP / MaxHP;
 }
 
-void AMonster::FindEnemy()
-{
-	if (false == ExclamationMark->IsActive())
-	{
-		ExclamationMark->SetActive(true);
-	}
 
-}
-
-void AMonster::MissEnemy()
-{
-	if (true == ExclamationMark->IsActive())
-	{
-		ExclamationMark->Deactivate();
-	}
-}
 
 void AMonster::Dead()
 {
@@ -264,4 +265,24 @@ void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsAttacking = false;
 	OnAttackEnd.Broadcast();
+}
+
+void AMonster::LockOn()
+{
+	LockOnParticle->SetVisibility(true);
+}
+
+void AMonster::LockOff()
+{
+	LockOnParticle->SetVisibility(false);
+}
+
+void AMonster::FindEnemy()
+{
+	ExclamationMark->SetVisibility(true);
+}
+
+void AMonster::MissEnemy()
+{
+	ExclamationMark->SetVisibility(false);
 }
