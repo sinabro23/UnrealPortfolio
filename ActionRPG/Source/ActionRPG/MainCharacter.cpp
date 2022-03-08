@@ -33,7 +33,7 @@ AMainCharacter::AMainCharacter()
 	SpringArm->SetupAttachment(GetRootComponent());
 	Camera->SetupAttachment(SpringArm);
 
-	SpringArm->TargetArmLength = 500.f;
+	SpringArm->TargetArmLength = DeafaultSpinrgArmLength;
 	SpringArm->bUsePawnControlRotation = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
@@ -122,11 +122,13 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AMainCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shift"), EInputEvent::IE_Pressed, this, &AMainCharacter::ShiftKey);
+	PlayerInputComponent->BindAction(TEXT("Tap"), EInputEvent::IE_Pressed, this, &AMainCharacter::LockOn);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMainCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMainCharacter::LeftRight);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis(TEXT("MouseWheel"), this, &AMainCharacter::CameraZoom);
 }
 
 void AMainCharacter::UpDown(float InputValue)
@@ -151,6 +153,15 @@ void AMainCharacter::LeftRight(float InputValue)
 	const FVector Direction = FRotationMatrix(RotatorYaw).GetUnitAxis(EAxis::Y);
 
 	AddMovementInput(Direction, InputValue);
+}
+
+void AMainCharacter::CameraZoom(float InputValue)
+{
+	if (0 == InputValue)
+		return;
+
+	const float NewTargetArmLength = SpringArm->TargetArmLength + InputValue * ZoomStep;
+	SpringArm->TargetArmLength = FMath::Clamp(NewTargetArmLength, MinSpringArmLength, MaxSpringArmLength);
 }
 
 void AMainCharacter::Attack()
@@ -254,6 +265,11 @@ void AMainCharacter::ShiftKey()
 		CharacterCanBeDamaged = false;
 		bIsAttacking = true;
 	}
+}
+
+void AMainCharacter::LockOn()
+{
+	
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

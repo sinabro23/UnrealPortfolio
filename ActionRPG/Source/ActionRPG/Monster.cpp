@@ -29,7 +29,7 @@ AMonster::AMonster()
 
 	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
 	HPBar->SetupAttachment(GetMesh());
-	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 300.f));
+	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, HPBarHeight));
 	HPBar->SetWidgetSpace(EWidgetSpace::Screen);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UW_HPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/Monster/MonsterHealthBar.MonsterHealthBar_C'"));
@@ -132,6 +132,8 @@ void AMonster::PostInitializeComponents()
 			MonsterAnim->OnAttackHitCheck.AddUObject(this, &AMonster::AttackHitCheck);
 		}
 	}
+
+	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, HPBarHeight));
 }
 
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

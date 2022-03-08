@@ -40,6 +40,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
 	class USoundCue* AttackSound;
 
+	TWeakObjectPtr<class AMonster> CurrentTargetMonster;
+
 private:
 	int32 AttackSectionIndex = 0;
 
@@ -52,13 +54,29 @@ private:
 	float AttackRadius;
 
 	bool CharacterCanBeDamaged = true;
+
+protected:
+	// 카메라 줌 관련
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	float MinSpringArmLength = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	float MaxSpringArmLength = 1000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	float DeafaultSpinrgArmLength = 500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	float ZoomStep = 40.f;
+
 public:
 	void UpDown(float InputValue);
 	void LeftRight(float InputValue);
+	void CameraZoom(float InputValue);
 
 	void Attack();
 	void AttackHitCheck();
 	void ShiftKey();
+
+	void LockOn();
+
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
