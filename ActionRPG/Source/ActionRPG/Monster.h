@@ -100,6 +100,9 @@ public:
 	void LockOn();
 	void LockOff();
 
+	void WidgetTurnOn();
+	void WidgetTurnOff();
+
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 public:

@@ -65,6 +65,9 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FRotator LockOnLookAtRotation;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	class USphereComponent* SphereForTargetHPBar;
+
 	FTimerHandle DeadTimerHandle;
 
 	bool bIsDead = false;
@@ -97,6 +100,10 @@ public:
 	
 	FRotator GetLookAtRotationYaw(FVector TargetVector);
 
+	UFUNCTION()
+	void OnSphereOverlappedForHPBar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnSphereEndOverlappedForHPBar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	// ½ºÅÈ °ü·Ã
 private:

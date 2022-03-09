@@ -31,6 +31,7 @@ AMonster::AMonster()
 	HPBar->SetupAttachment(GetMesh());
 	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, HPBarHeight));
 	HPBar->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBar->bAutoActivate = false;
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UW_HPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/Monster/MonsterHealthBar.MonsterHealthBar_C'"));
 	if (UW_HPBAR.Succeeded())
@@ -42,6 +43,7 @@ AMonster::AMonster()
 	NameBox = CreateDefaultSubobject<UWidgetComponent>(TEXT("NAMEBOX"));
 	NameBox->SetupAttachment(HPBar);
 	NameBox->SetWidgetSpace(EWidgetSpace::Screen);
+	NameBox->bAutoActivate = false;
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UW_NAMEBOX(TEXT("WidgetBlueprint'/Game/_Game/UI/Monster/MonsterName.MonsterName_C'"));
 	if (UW_NAMEBOX.Succeeded())
@@ -56,8 +58,9 @@ AMonster::AMonster()
 	ExclamationMark = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EXCLAMATION"));
 	ExclamationMark->SetupAttachment(GetRootComponent());
 	ExclamationMark->SetRelativeLocation(FVector(0.0f, 0.0f, ExclamationMarkHeight));
-	ExclamationMark->bAutoActivate = true;
-	ExclamationMark->SetVisibility(false);
+	//ExclamationMark->bAutoActivate = true;
+	//ExclamationMark->SetVisibility(false);
+	ExclamationMark->bAutoActivate = false;
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_EXCLAMATION(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_Quest.P_Status_Quest'"));
 	if (PS_EXCLAMATION.Succeeded())
@@ -132,6 +135,8 @@ void AMonster::PostInitializeComponents()
 		HPWidget->BindHP(this);
 	}
 
+	HPBar->SetVisibility(false);
+
 	NameBox->InitWidget();
 	auto NameBoxWidget = Cast<UMonsterNameWidget>(NameBox->GetUserWidgetObject());
 	if (NameBoxWidget)
@@ -139,6 +144,7 @@ void AMonster::PostInitializeComponents()
 		NameBoxWidget->BindName(this);
 	}
 
+	NameBox->SetVisibility(false);
 
 	auto Anim = GetMesh()->GetAnimInstance();
 	if (Anim)
@@ -291,12 +297,28 @@ void AMonster::LockOff()
 
 }
 
+void AMonster::WidgetTurnOn()
+{
+	HPBar->SetVisibility(true);
+	NameBox->SetVisibility(true);
+}
+
+void AMonster::WidgetTurnOff()
+{
+	HPBar->SetVisibility(false);
+	NameBox->SetVisibility(false);
+}
+
+
+
 void AMonster::FindEnemy()
 {
-	ExclamationMark->SetVisibility(true);
+	//ExclamationMark->SetVisibility(true);
+	ExclamationMark->Activate();
 }
 
 void AMonster::MissEnemy()
 {
-	ExclamationMark->SetVisibility(false);
+	//ExclamationMark->SetVisibility(false);
+	ExclamationMark->Deactivate();
 }

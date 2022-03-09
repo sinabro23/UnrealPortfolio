@@ -14,6 +14,7 @@
 #include "Monster.h"
 #include "TimerManager.h"
 #include "MainPlayerController.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -69,6 +70,11 @@ AMainCharacter::AMainCharacter()
 		AttackSound = SC_ATTACK.Object;
 	}
 
+	SphereForTargetHPBar = CreateDefaultSubobject<USphereComponent>(TEXT("SPHEREFORTARGET"));
+	SphereForTargetHPBar->SetupAttachment(GetRootComponent());
+	SphereForTargetHPBar->InitSphereRadius(1000.f);
+	SphereForTargetHPBar->SetHiddenInGame(false);
+
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
 
@@ -93,7 +99,8 @@ void AMainCharacter::PostInitializeComponents()
 		MainAnim->OnAttackHitCheck.AddUObject(this, &AMainCharacter::AttackHitCheck);
 	}
 
-
+	SphereForTargetHPBar->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnSphereOverlappedForHPBar);
+	SphereForTargetHPBar->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::OnSphereEndOverlappedForHPBar);
 
 }
 
@@ -423,5 +430,23 @@ FRotator AMainCharacter::GetLookAtRotationYaw(FVector TargetVector)
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetVector);
 	FRotator LookAtRotationYaw(0.f, LookAtRotation.Yaw, 0.f);
 	return LookAtRotationYaw;
+}
+
+void AMainCharacter::OnSphereOverlappedForHPBar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto Monster = Cast<AMonster>(OtherActor);
+	if (Monster)
+	{
+		Monster->WidgetTurnOn();
+	}
+}
+
+void AMainCharacter::OnSphereEndOverlappedForHPBar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	auto Monster = Cast<AMonster>(OtherActor);
+	if (Monster)
+	{
+		Monster->WidgetTurnOff();
+	}
 }
 
