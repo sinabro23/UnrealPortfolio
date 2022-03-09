@@ -130,14 +130,6 @@ void AMainCharacter::CapslockKeyDown()
 
 }
 
-void AMainCharacter::CapslockKeyUp()
-{
-	if (MainAnim)
-	{
-		MainAnim->SetSprintingAnim();
-	}
-}
-
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
@@ -212,7 +204,36 @@ void AMainCharacter::Tick(float DeltaTime)
 			bIsLockOn = false;
 			CurrentTargetMonster = nullptr;
 		}
-	
+	}
+
+	float DeltaStamina = StaminaDrainRate * DeltaTime;
+	if (MovementStatus == EMovementStatus::EMS_SPRINTING)
+	{
+		CurrentStamina -= DeltaStamina;
+		
+		if (CurrentStamina <= 0.f)
+		{
+			MainAnim->SetSprintingAnim();
+			CurrentStamina = 0.f;
+			SetMovementStatus(EMovementStatus::EMS_NORMAL);
+		}
+
+		if (GetCharacterMovement()->IsFalling() || 0.f == GetVelocity().Size())
+		{
+			MainAnim->SetSprintingAnim();
+			SetMovementStatus(EMovementStatus::EMS_NORMAL);
+		}
+	}
+	else
+	{
+		if (CurrentStamina <= MaxStamina)
+		{
+			CurrentStamina += DeltaStamina;
+			if (CurrentStamina > MaxStamina)
+			{
+				CurrentStamina = MaxStamina;
+			}
+		}
 	}
 }
 
@@ -382,11 +403,12 @@ void AMainCharacter::ShiftKey()
 		return;
 
 
-	if (MainAnim)
+	if (MainAnim && CurrentStamina >= 40.f)
 	{
 		MainAnim->PlayEvadeMontage();
 		CharacterCanBeDamaged = false;
 		bIsAttacking = true;
+		CurrentStamina -= 40.f;
 	}
 }
 

@@ -33,9 +33,11 @@ public:
 	float RunningSpeed = 650.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Running")
 	float SpringtingSpeed = 950.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Running")
+	float StaminaDrainRate = 25.f; // 뛸때 스태미나 줄어드는 양
 
 	void CapslockKeyDown();
-	void CapslockKeyUp();
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -144,6 +146,10 @@ private:
 	float CurrentMP = 60.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxMP = 100.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float CurrentStamina = 100.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float MaxStamina = 100.f;
 
 	float AttackDamage = 5.f;
 
