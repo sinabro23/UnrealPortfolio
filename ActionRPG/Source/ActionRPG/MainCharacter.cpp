@@ -247,6 +247,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Shift"), EInputEvent::IE_Pressed, this, &AMainCharacter::ShiftKey);
 	PlayerInputComponent->BindAction(TEXT("Tap"), EInputEvent::IE_Pressed, this, &AMainCharacter::LockOn);
 
+	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Pressed, this, &AMainCharacter::EKeyPressed);
+	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Released, this, &AMainCharacter::EKeyReleased);
+
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &AMainCharacter::CapslockKeyDown);
 	//PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &AMainCharacter::CapslockKeyUp);
 
@@ -412,6 +415,22 @@ void AMainCharacter::ShiftKey()
 	}
 }
 
+void AMainCharacter::EKeyPressed()
+{
+	IsEkeyPressed = true;
+	if (bIsNearSphereOverlapped)
+	{
+		Blessed();
+	}
+}
+
+void AMainCharacter::EKeyReleased()
+{
+	IsEkeyPressed = false;
+}
+
+
+
 void AMainCharacter::LockOn()
 {
 	if (bIsLockOn)
@@ -479,6 +498,13 @@ void AMainCharacter::LockOn()
 	}
 }
 
+void AMainCharacter::Blessed()
+{
+	CurrentHP = MaxHP;
+	CurrentMP = MaxMP;
+	CurrentStamina = MaxStamina;
+}
+
 void AMainCharacter::Dead()
 {
 	if (MainAnim)
@@ -541,6 +567,7 @@ void AMainCharacter::OnSphereOverlappedForNear(UPrimitiveComponent* OverlappedCo
 	if(Statue)
 	{
 		Statue->TurnOnWidget();
+		bIsNearSphereOverlapped = true;
 	}
 }
 
@@ -550,6 +577,7 @@ void AMainCharacter::OnSphereEndOverlappedForNear(UPrimitiveComponent* Overlappe
 	if (Statue)
 	{
 		Statue->TurnOffWidget();
+		bIsNearSphereOverlapped = false;
 	}
 }
 

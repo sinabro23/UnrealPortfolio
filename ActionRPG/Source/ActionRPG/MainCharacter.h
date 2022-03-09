@@ -93,6 +93,7 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	class USphereComponent* NearRangeSphere;
+	bool bIsNearSphereOverlapped = false;
 
 	FTimerHandle DeadTimerHandle;
 
@@ -117,9 +118,16 @@ public:
 	void AttackHitCheck();
 	void ShiftKey();
 
+	void EKeyPressed();
+	void EKeyReleased();
+	bool IsEkeyPressed = false;
+
 	void LockOn();
 
+	void Blessed();
+
 	void Dead();
+
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
