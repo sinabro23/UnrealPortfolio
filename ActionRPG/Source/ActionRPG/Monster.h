@@ -96,6 +96,7 @@ public:
 
 	void AttackHitCheck();
 
+	bool bLockOnVisible = false;
 	void LockOn();
 	void LockOff();
 

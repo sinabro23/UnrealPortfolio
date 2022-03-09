@@ -273,12 +273,22 @@ void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 
 void AMonster::LockOn()
 {
-	LockOnParticle->SetVisibility(true);
+	if (!bLockOnVisible)
+	{
+		LockOnParticle->SetVisibility(true);
+		bLockOnVisible = true;
+	}
+	
 }
 
 void AMonster::LockOff()
 {
-	LockOnParticle->SetVisibility(false);
+	if (bLockOnVisible)
+	{
+		LockOnParticle->SetVisibility(false);
+		bLockOnVisible = false;
+	}
+
 }
 
 void AMonster::FindEnemy()
