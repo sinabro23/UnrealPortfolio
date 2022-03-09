@@ -37,6 +37,12 @@ void UMainCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	
 }
 
+void UMainCharacterAnimInstance::NativeInitializeAnimation()
+{
+	Super::NativeInitializeAnimation();
+
+}
+
 void UMainCharacterAnimInstance::PlayAttackMontage()
 {
 	if (AttackMontage)
@@ -73,6 +79,18 @@ void UMainCharacterAnimInstance::AnimNotify_AttackCheck()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AttackCheck"));
 	OnAttackHitCheck.Broadcast();
+}
+
+void UMainCharacterAnimInstance::SetSprintingAnim()
+{
+	if (bIsSprinting)
+	{
+		bIsSprinting = false;
+	}
+	else
+	{
+		bIsSprinting = true;
+	}
 }
 
 

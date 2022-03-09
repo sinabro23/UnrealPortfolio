@@ -43,7 +43,7 @@ AMainCharacter::AMainCharacter()
 	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 50.f));
 	SpringArm->bUsePawnControlRotation = true;
 
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	GetCharacterMovement()->MaxWalkSpeed = 650.f;
 
 
 	// 애님인스턴스관련
@@ -85,6 +85,57 @@ AMainCharacter::AMainCharacter()
 	AttackRadius = 50.f;
 
 	LockOnLookAtRotation = FRotator(0.0f);
+}
+
+void AMainCharacter::SetMovementStatus(EMovementStatus NewStatus)
+{
+	MovementStatus = NewStatus;
+
+	switch (MovementStatus)
+	{
+	case EMovementStatus::EMS_NORMAL:
+		GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+		break;
+	case EMovementStatus::EMS_SPRINTING:
+		GetCharacterMovement()->MaxWalkSpeed = SpringtingSpeed;	
+		break;
+	case EMovementStatus::EMS_MAX:
+		break;
+	default:
+		break;
+	}
+}
+
+
+
+void AMainCharacter::CapslockKeyDown()
+{
+	if (MainAnim)
+	{
+		MainAnim->SetSprintingAnim();
+		switch (MovementStatus)
+		{
+		case EMovementStatus::EMS_NORMAL:
+			SetMovementStatus(EMovementStatus::EMS_SPRINTING);
+			break;
+		case EMovementStatus::EMS_SPRINTING:
+			SetMovementStatus(EMovementStatus::EMS_NORMAL);
+			break;
+		case EMovementStatus::EMS_MAX:
+			break;
+		default:
+			break;
+		}
+	}
+
+}
+
+void AMainCharacter::CapslockKeyUp()
+{
+	if (MainAnim)
+	{
+		MainAnim->SetSprintingAnim();
+	}
 }
 
 // Called when the game starts or when spawned
@@ -174,6 +225,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shift"), EInputEvent::IE_Pressed, this, &AMainCharacter::ShiftKey);
 	PlayerInputComponent->BindAction(TEXT("Tap"), EInputEvent::IE_Pressed, this, &AMainCharacter::LockOn);
+
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &AMainCharacter::CapslockKeyDown);
+	//PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &AMainCharacter::CapslockKeyUp);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMainCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMainCharacter::LeftRight);

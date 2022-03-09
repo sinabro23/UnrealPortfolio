@@ -6,6 +6,16 @@
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EMovementStatus : uint8
+{
+	EMS_NORMAL UMETA(DisplayName = "Normal"),
+	EMS_SPRINTING UMETA(DisplayName = "Sprinting"),
+
+	EMS_MAX UMETA(DisplayName = "Max")
+
+};
+
 UCLASS()
 class ACTIONRPG_API AMainCharacter : public ACharacter
 {
@@ -15,6 +25,17 @@ public:
 	// Sets default values for this character's properties
 	AMainCharacter();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enums")
+	EMovementStatus MovementStatus;
+
+	void SetMovementStatus(EMovementStatus NewStatus);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Running")
+	float RunningSpeed = 650.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Running")
+	float SpringtingSpeed = 950.f;
+
+	void CapslockKeyDown();
+	void CapslockKeyUp();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

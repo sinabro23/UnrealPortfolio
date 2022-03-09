@@ -19,6 +19,9 @@ public:
 	UMainCharacterAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+protected:
+	virtual void NativeInitializeAnimation() override;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;
@@ -34,6 +37,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool bIsSprinting = false;
+
 public:
 	void PlayAttackMontage();
 	void PlayEvadeMontage();
@@ -44,6 +51,8 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_AttackCheck();
+
+	void SetSprintingAnim();
 
 public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
