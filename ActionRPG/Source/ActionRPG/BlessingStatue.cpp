@@ -10,7 +10,7 @@
 ABlessingStatue::ABlessingStatue()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
 	RootComponent = Mesh;
@@ -20,10 +20,6 @@ ABlessingStatue::ABlessingStatue()
 	{
 		Mesh->SetStaticMesh(SM_STATUE.Object);
 	}
-
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("SPHERE"));
-	Sphere->SetupAttachment(GetRootComponent());
-	Sphere->InitSphereRadius(300.f);
 
 	TextWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TEXTWIDGET"));
 	TextWidget->SetupAttachment(GetRootComponent());
@@ -51,34 +47,18 @@ void ABlessingStatue::PostInitializeComponents()
 
 	TextWidget->InitWidget();
 	TextWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 200.f));
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ABlessingStatue::OnOverlapBegin);
-	Sphere->OnComponentEndOverlap.AddDynamic(this, &ABlessingStatue::OnOverlapEnd);
 
 	TextWidget->SetVisibility(false);
 }
 
-// Called every frame
-void ABlessingStatue::Tick(float DeltaTime)
+void ABlessingStatue::TurnOnWidget()
 {
-	Super::Tick(DeltaTime);
-
+	TextWidget->SetVisibility(true);
 }
 
-void ABlessingStatue::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ABlessingStatue::TurnOffWidget()
 {
-	auto Character = Cast<AMainCharacter>(OtherActor);
-	if (Character)
-	{
-		TextWidget->SetVisibility(true);
-	}
+	TextWidget->SetVisibility(false);
 }
 
-void ABlessingStatue::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	auto Character = Cast<AMainCharacter>(OtherActor);
-	if (Character)
-	{
-		TextWidget->SetVisibility(false);
-	}
-}
 

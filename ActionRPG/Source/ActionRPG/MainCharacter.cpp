@@ -15,6 +15,7 @@
 #include "TimerManager.h"
 #include "MainPlayerController.h"
 #include "Components/SphereComponent.h"
+#include "BlessingStatue.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -73,7 +74,12 @@ AMainCharacter::AMainCharacter()
 	SphereForTargetHPBar = CreateDefaultSubobject<USphereComponent>(TEXT("SPHEREFORTARGET"));
 	SphereForTargetHPBar->SetupAttachment(GetRootComponent());
 	SphereForTargetHPBar->InitSphereRadius(1000.f);
-	SphereForTargetHPBar->SetHiddenInGame(false);
+	SphereForTargetHPBar->SetHiddenInGame(true);
+
+	NearRangeSphere = CreateDefaultSubobject<USphereComponent>(TEXT("NEARRANGESPHERE"));
+	NearRangeSphere->SetupAttachment(GetRootComponent());
+	NearRangeSphere->InitSphereRadius(300.f);
+	NearRangeSphere->SetHiddenInGame(true);
 
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
@@ -101,6 +107,9 @@ void AMainCharacter::PostInitializeComponents()
 
 	SphereForTargetHPBar->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnSphereOverlappedForHPBar);
 	SphereForTargetHPBar->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::OnSphereEndOverlappedForHPBar);
+
+	NearRangeSphere->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnSphereOverlappedForNear);
+	NearRangeSphere->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::OnSphereEndOverlappedForNear);
 
 }
 
@@ -447,6 +456,24 @@ void AMainCharacter::OnSphereEndOverlappedForHPBar(UPrimitiveComponent* Overlapp
 	if (Monster)
 	{
 		Monster->WidgetTurnOff();
+	}
+}
+
+void AMainCharacter::OnSphereOverlappedForNear(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto Statue = Cast<ABlessingStatue>(OtherActor);
+	if(Statue)
+	{
+		Statue->TurnOnWidget();
+	}
+}
+
+void AMainCharacter::OnSphereEndOverlappedForNear(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	auto Statue = Cast<ABlessingStatue>(OtherActor);
+	if (Statue)
+	{
+		Statue->TurnOffWidget();
 	}
 }
 
