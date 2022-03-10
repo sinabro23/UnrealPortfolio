@@ -16,6 +16,7 @@
 #include "MainPlayerController.h"
 #include "Components/SphereComponent.h"
 #include "BlessingStatue.h"
+#include "MainSaveGame.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -249,6 +250,11 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Pressed, this, &AMainCharacter::EKeyPressed);
 	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Released, this, &AMainCharacter::EKeyReleased);
+
+	PlayerInputComponent->BindAction(TEXT("TestKey1"), EInputEvent::IE_Pressed, this, &AMainCharacter::SaveGame);
+	PlayerInputComponent->BindAction(TEXT("TestKey2"), EInputEvent::IE_Pressed, this, &AMainCharacter::LoadGame);
+
+	PlayerInputComponent->BindAction(TEXT("HPPotion"), EInputEvent::IE_Pressed, this, &AMainCharacter::HPPotion);
 
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &AMainCharacter::CapslockKeyDown);
 	//PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &AMainCharacter::CapslockKeyUp);
@@ -527,6 +533,25 @@ void AMainCharacter::Dead()
 	}), 10.f, false);
 }
 
+void AMainCharacter::HPPotion()
+{
+	if (HPPotionCount <= 0)
+	{
+		HPPotionCount = 0;
+		return;
+	}
+	else
+	{
+		HPPotionCount--;
+		CurrentHP += HPPotionHealth;
+		if (CurrentHP >= MaxHP)
+		{
+			CurrentHP = MaxHP;
+		}
+	}
+
+}
+
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (!CharacterCanBeDamaged)
@@ -579,5 +604,39 @@ void AMainCharacter::OnSphereEndOverlappedForNear(UPrimitiveComponent* Overlappe
 		Statue->TurnOffWidget();
 		bIsNearSphereOverlapped = false;
 	}
+}
+
+void AMainCharacter::SaveGame()
+{
+	UMainSaveGame* SaveGameInstance = Cast<UMainSaveGame>(UGameplayStatics::CreateSaveGameObject(UMainSaveGame::StaticClass()));
+
+	SaveGameInstance->CharacterStats.CurrentHP = CurrentHP;
+	SaveGameInstance->CharacterStats.MaxHP = MaxHP;
+	SaveGameInstance->CharacterStats.CurrentMP = CurrentMP;
+	SaveGameInstance->CharacterStats.MaxMP = MaxMP;
+	SaveGameInstance->CharacterStats.CurrentStamina = CurrentStamina;
+	SaveGameInstance->CharacterStats.MaxStamina = MaxStamina;
+
+	SaveGameInstance->CharacterStats.Location = GetActorLocation();
+	SaveGameInstance->CharacterStats.Rotation = GetActorRotation();
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->PlayerName, SaveGameInstance->UserIndex);
+}
+
+void AMainCharacter::LoadGame()
+{
+	UMainSaveGame* LoadGameInstance = Cast<UMainSaveGame>(UGameplayStatics::CreateSaveGameObject(UMainSaveGame::StaticClass()));
+
+	LoadGameInstance = Cast<UMainSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->PlayerName, LoadGameInstance->UserIndex));
+
+	CurrentHP = LoadGameInstance->CharacterStats.CurrentHP;
+	MaxHP = LoadGameInstance->CharacterStats.MaxHP;
+	CurrentMP = LoadGameInstance->CharacterStats.CurrentMP;
+	MaxMP = LoadGameInstance->CharacterStats.MaxMP;
+	CurrentStamina = LoadGameInstance->CharacterStats.CurrentStamina;
+	MaxStamina = LoadGameInstance->CharacterStats.MaxStamina;
+
+	SetActorLocation(LoadGameInstance->CharacterStats.Location);
+	SetActorRotation(LoadGameInstance->CharacterStats.Rotation);
 }
 

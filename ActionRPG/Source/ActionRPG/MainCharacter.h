@@ -128,6 +128,7 @@ public:
 
 	void Dead();
 
+	void HPPotion();
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -159,11 +160,22 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxStamina = 100.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	int32 HPPotionCount = 3;
+
 	float AttackDamage = 5.f;
+	float HPPotionHealth = 15.f;
 
 
 public:
 	UFUNCTION(BlueprintCallable)
+	void SaveGame();
+	UFUNCTION(BlueprintCallable)
+	void LoadGame();
+
+public:
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetHPRatio() { return CurrentHP / MaxHP; }
+
 
 };
