@@ -56,10 +56,6 @@ void ASpawningColumn::Tick(float DeltaTime)
 	if (MonsterCount <= 0)
 	{
 		MonsterCount = 0;
-
-		ATroll* SpawnedTroll = GetWorld()->SpawnActor<ATroll>(GetRandomPoint(), FRotator::ZeroRotator);
-		AGrunt* SpawnedGrunt = GetWorld()->SpawnActor<AGrunt>(GetRandomPoint(), FRotator::ZeroRotator);
-		
 	}
 
 }
@@ -81,6 +77,8 @@ void ASpawningColumn::MonsterCheck()
 
 	if (bResult)
 	{
+		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+
 		int32 Count = 0;
 		for (auto OverlapResult : OverlapResults)
 		{
@@ -92,10 +90,19 @@ void ASpawningColumn::MonsterCheck()
 			
 		}
 		MonsterCount = Count;
+
+	
 	}
 	else
 	{
 		MonsterCount = 0;
+
+		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
+
+			SpawnMonster();
+			SpawnMonster();
+
+		}), 2.f, false);
 	}
 
 	DrawDebugSphere(GetWorld(), Center, DetectRange, 16, FColor::Blue, false, 1.f);
@@ -109,7 +116,7 @@ FVector ASpawningColumn::GetRandomPoint()
 
 	FNavLocation RandomLocation;
 
-	if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 600.f, RandomLocation))
+	if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 500.f, RandomLocation))
 	{
 		return RandomLocation;
 	}
@@ -123,5 +130,12 @@ FVector ASpawningColumn::GetRandomPoint()
 int32 ASpawningColumn::GetMonsterCount()
 {
 	return MonsterCount;
+}
+
+void ASpawningColumn::SpawnMonster()
+{
+	ATroll* Troll = GetWorld()->SpawnActor<ATroll>(GetRandomPoint(), FRotator::ZeroRotator);
+	AGrunt* Grunt = GetWorld()->SpawnActor<AGrunt>(GetRandomPoint(), FRotator::ZeroRotator);
+	
 }
 

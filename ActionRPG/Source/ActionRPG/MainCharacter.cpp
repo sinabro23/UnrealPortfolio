@@ -181,7 +181,7 @@ void AMainCharacter::Tick(float DeltaTime)
 
 	if (bIsLockOn)
 	{
-		if (CurrentTargetMonster.IsValid())
+		if (CurrentTargetMonster.IsValid() && !CurrentTargetMonster->IsDead())
 		{
 			float Distance = (GetActorLocation() - CurrentTargetMonster->GetActorLocation()).Size();
 			if (Distance >= 1000.f)

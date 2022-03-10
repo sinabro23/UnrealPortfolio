@@ -31,9 +31,7 @@ public:
 
 	FTimerHandle SpawnTimerHandle;
 
-
-
-	float DetectRange = 1200.f;
+	float DetectRange = 1500.f;
 
 public:
 	void MonsterCheck();
@@ -41,5 +39,7 @@ public:
 	FVector GetRandomPoint();
 
 	int32 GetMonsterCount();
+
+	void SpawnMonster();
 
 };

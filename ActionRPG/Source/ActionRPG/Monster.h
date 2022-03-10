@@ -87,6 +87,9 @@ public:
 	void MissEnemy();
 
 	void Dead();
+	bool bIsDead = false;
+	bool IsDead();
+
 
 	UFUNCTION(BlueprintCallable)
 	FString GetMonsterName();

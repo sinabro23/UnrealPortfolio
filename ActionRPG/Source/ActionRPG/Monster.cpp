@@ -202,6 +202,8 @@ float AMonster::GetHPRatio()
 
 void AMonster::Dead()
 {
+	bIsDead = true;
+	LockOnParticle->SetVisibility(false);
 	SetActorEnableCollision(false);
 	GetMovementBase()->SetHiddenInGame(false);
 	HPBar->SetHiddenInGame(true);
@@ -278,6 +280,11 @@ void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsAttacking = false;
 	OnAttackEnd.Broadcast();
+}
+
+bool AMonster::IsDead()
+{
+	return bIsDead;
 }
 
 void AMonster::LockOn()
