@@ -31,7 +31,7 @@ public:
 
 	FTimerHandle SpawnTimerHandle;
 
-	float DetectRange = 4000.f;
+	float DetectRange = 1200.f;
 
 public:
 	void MonsterCheck();

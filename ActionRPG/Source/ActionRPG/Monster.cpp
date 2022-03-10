@@ -82,12 +82,14 @@ AMonster::AMonster()
 	LockOnParticle->bAutoActivate = true;
 	LockOnParticle->SetVisibility(false);
 
-
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_LOCKON(TEXT("ParticleSystem'/Game/_Game/FX/P_Targeting_Player_Select.P_Targeting_Player_Select'"));
 	if (PS_LOCKON.Succeeded())
 	{
 		LockOnParticle->SetTemplate(PS_LOCKON.Object);
+		
 	}
+
+	
 
 	MonsterName = FString(TEXT("NONE"));
 
@@ -159,7 +161,7 @@ void AMonster::PostInitializeComponents()
 
 	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, HPBarHeight));
 
-	LockOnParticle->SetRelativeLocation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+	//LockOnParticle->SetRelativeLocation(FVector(0.0f, 0.0f, 20.f-GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 }
 
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

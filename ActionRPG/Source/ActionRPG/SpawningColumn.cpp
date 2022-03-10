@@ -97,6 +97,8 @@ void ASpawningColumn::MonsterCheck()
 
 		MonsterCount = Count;
 	}
+
+	DrawDebugSphere(GetWorld(), Center, DetectRange, 16, FColor::Blue, false, 1.f);
 }
 
 int32 ASpawningColumn::GetMonsterCount()
