@@ -19,6 +19,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
@@ -27,4 +28,21 @@ public:
 	UPROPERTY()
 	class UUserWidget* HUDOverlay; //화면에 띄워질 HUD전체
 
+public:
+
+
+	void ChangeInputMode(bool bGameMode = true);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+	TSubclassOf<class UMainGameplayWidget> MenuWidgetClass;
+
+private:
+	void OnGamePause();
+
+	UPROPERTY()
+	UMainGameplayWidget* MenuWidget;
+
+	FInputModeGameOnly GameInputMode;
+	FInputModeUIOnly UIInputMode;
 };
