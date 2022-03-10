@@ -34,10 +34,9 @@ public:
 	float DetectRange = 4000.f;
 
 public:
-	UFUNCTION()
-	void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 	void MonsterCheck();
 
 	int32 GetMonsterCount();
+
+	FVector GetSpawnPoint();
 };

@@ -106,7 +106,7 @@ void AMonster::BeginPlay()
 		MonsterAIController->RunAI();
 	}
 
-
+	OriginVector = GetActorLocation();
 
 }
 
@@ -301,6 +301,11 @@ void AMonster::WidgetTurnOn()
 {
 	HPBar->SetVisibility(true);
 	NameBox->SetVisibility(true);
+}
+
+FVector AMonster::GetOriginVector()
+{
+	return FVector();
 }
 
 void AMonster::WidgetTurnOff()

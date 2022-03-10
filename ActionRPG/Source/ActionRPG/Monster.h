@@ -103,6 +103,8 @@ public:
 	void WidgetTurnOn();
 	void WidgetTurnOff();
 
+	FVector OriginVector;
+	FVector GetOriginVector();
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 public:

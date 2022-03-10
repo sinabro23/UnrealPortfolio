@@ -46,21 +46,27 @@ void ASpawningColumn::Tick(float DeltaTime)
 	MonsterCheck();
 	
 	UE_LOG(LogTemp, Warning, TEXT("Monster Count : %d"), MonsterCount);
+
+	if (MonsterCount <= 0)
+	{
+		MonsterCount = 0;
+		
+		for (int i = 0; i < 2; i++)
+		{
+			
+		}
+	}
+
 }
 
-void ASpawningColumn::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+FVector ASpawningColumn::GetSpawnPoint()
 {
-	AMonster* Monster = Cast<AMonster>(OtherActor);
-	if (Monster)
-	{
-		MonsterCount++;
-	}
+	//FVector Extent = 
+	//FVector Origin = SpawningBox->GetComponentLocation();
+	//FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox(Origin, Extent);
 
-	AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
-	if (MainCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MONSTER COUNT : %d"), MonsterCount);
-	}
+	//return RandomPoint;
+	return FVector();
 }
 
 void ASpawningColumn::MonsterCheck()
