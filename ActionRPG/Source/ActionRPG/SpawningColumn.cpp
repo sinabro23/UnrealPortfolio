@@ -50,8 +50,6 @@ void ASpawningColumn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	MonsterCheck();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Monster Count : %d"), MonsterCount);
 
 	if (MonsterCount <= 0)
 	{
@@ -84,7 +82,6 @@ void ASpawningColumn::MonsterCheck()
 		{
 			if (OverlapResult.Actor.IsValid())
 			{
-			//	UE_LOG(LogTemp, Warning, TEXT("Monster Exist"));
 				Count++;
 			}
 			

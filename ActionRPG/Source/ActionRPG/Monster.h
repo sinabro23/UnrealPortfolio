@@ -86,6 +86,8 @@ public:
 	void FindEnemy();
 	void MissEnemy();
 
+	void SpawnItem();
+
 	void Dead();
 	bool bIsDead = false;
 	bool IsDead();

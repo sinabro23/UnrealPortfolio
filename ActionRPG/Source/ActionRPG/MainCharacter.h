@@ -129,7 +129,7 @@ public:
 	void Dead();
 
 	void HPPotion();
-
+	void GetHPPotion();
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	

@@ -17,7 +17,7 @@
 #include "Components/SphereComponent.h"
 #include "BlessingStatue.h"
 #include "MainSaveGame.h"
-
+#include "HPPotion.h"
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
@@ -552,6 +552,11 @@ void AMainCharacter::HPPotion()
 
 }
 
+void AMainCharacter::GetHPPotion()
+{
+	HPPotionCount += 1;
+}
+
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (!CharacterCanBeDamaged)
@@ -593,6 +598,7 @@ void AMainCharacter::OnSphereOverlappedForNear(UPrimitiveComponent* OverlappedCo
 	{
 		Statue->TurnOnWidget();
 		bIsNearSphereOverlapped = true;
+		return;
 	}
 }
 

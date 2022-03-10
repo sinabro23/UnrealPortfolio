@@ -11,6 +11,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "MonsterNameWidget.h"
 #include "DrawDebugHelpers.h"
+#include "HPPotion.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -214,6 +215,7 @@ void AMonster::Dead()
 	MonsterAIController->StopAI();
 
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
+		SpawnItem();
 		Destroy();
 	}), 5.f, false);
 }
@@ -280,6 +282,12 @@ void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsAttacking = false;
 	OnAttackEnd.Broadcast();
+}
+
+void AMonster::SpawnItem()
+{
+	FVector Loctaion = GetActorLocation() + (-1.f * GetActorUpVector()) * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	AHPPotion* HPPotion = GetWorld()->SpawnActor<AHPPotion>(Loctaion, FRotator::ZeroRotator);
 }
 
 bool AMonster::IsDead()
