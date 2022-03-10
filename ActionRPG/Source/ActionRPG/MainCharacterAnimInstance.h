@@ -35,6 +35,9 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* EvadeMontage;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SkillMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
 
@@ -48,6 +51,8 @@ public:
 	FName GetAttackMontageName(int32 MontageSection);
 
 	void SetDeadAnim();
+
+	void RMBSkillMontagePlay();
 
 	UFUNCTION()
 	void AnimNotify_AttackCheck();

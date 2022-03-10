@@ -126,6 +126,8 @@ public:
 
 	void Blessed();
 
+	void RMBSkill();
+
 	void Dead();
 
 	void HPPotion();
@@ -165,6 +167,11 @@ private:
 
 	float AttackDamage = 15.f;
 	float HPPotionHealth = 15.f;
+
+public:
+
+	void SetHP(float NewHP);
+	void SetMP(float NewMP);
 
 
 public:

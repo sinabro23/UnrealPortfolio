@@ -19,6 +19,12 @@ UMainCharacterAnimInstance::UMainCharacterAnimInstance()
 	{
 		EvadeMontage = AM_EVADE.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM_SKILL(TEXT("AnimMontage'/Game/_Game/Character/Animation/SkillMontage.SkillMontage'"));
+	if (AM_SKILL.Succeeded())
+	{
+		SkillMontage = AM_SKILL.Object;
+	}
 }
 
 void UMainCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -73,6 +79,15 @@ FName UMainCharacterAnimInstance::GetAttackMontageName(int32 MontageSection)
 void UMainCharacterAnimInstance::SetDeadAnim()
 {
 	bIsDead = true;
+}
+
+void UMainCharacterAnimInstance::RMBSkillMontagePlay()
+{
+	if (SkillMontage)
+	{
+		Montage_Play(SkillMontage, 1.f);
+		Montage_JumpToSection(TEXT("RMBSkill"), SkillMontage);
+	}
 }
 
 void UMainCharacterAnimInstance::AnimNotify_AttackCheck()

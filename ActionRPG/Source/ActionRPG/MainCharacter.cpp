@@ -164,12 +164,7 @@ float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	if (!CharacterCanBeDamaged)
 		return 0;
 
-	CurrentHP -= DamageAmount;
-	if (CurrentHP <= 0.f)
-	{
-		CurrentHP = 0.0f;
-		Dead();
-	}
+	SetHP(CurrentHP - DamageAmount);
 
 	return DamageAmount;
 }
@@ -247,6 +242,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shift"), EInputEvent::IE_Pressed, this, &AMainCharacter::ShiftKey);
 	PlayerInputComponent->BindAction(TEXT("Tap"), EInputEvent::IE_Pressed, this, &AMainCharacter::LockOn);
+	PlayerInputComponent->BindAction(TEXT("RMB"), EInputEvent::IE_Pressed, this, &AMainCharacter::RMBSkill);
 
 	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Pressed, this, &AMainCharacter::EKeyPressed);
 	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Released, this, &AMainCharacter::EKeyReleased);
@@ -506,9 +502,20 @@ void AMainCharacter::LockOn()
 
 void AMainCharacter::Blessed()
 {
-	CurrentHP = MaxHP;
-	CurrentMP = MaxMP;
+	SetHP(MaxHP);
+	SetMP(MaxMP);
 	CurrentStamina = MaxStamina;
+}
+
+void AMainCharacter::RMBSkill()
+{
+	if (bIsAttacking || CurrentMP <= 15.f)
+		return;
+	UE_LOG(LogTemp, Warning, TEXT("RMB"));
+	MainAnim->RMBSkillMontagePlay();
+	SetMP(CurrentMP - 15.f);
+
+	bIsAttacking = true;
 }
 
 void AMainCharacter::Dead()
@@ -543,11 +550,7 @@ void AMainCharacter::HPPotion()
 	else
 	{
 		HPPotionCount--;
-		CurrentHP += HPPotionHealth;
-		if (CurrentHP >= MaxHP)
-		{
-			CurrentHP = MaxHP;
-		}
+		SetHP(CurrentHP += HPPotionHealth);
 	}
 
 }
@@ -609,6 +612,36 @@ void AMainCharacter::OnSphereEndOverlappedForNear(UPrimitiveComponent* Overlappe
 	{
 		Statue->TurnOffWidget();
 		bIsNearSphereOverlapped = false;
+	}
+}
+
+void AMainCharacter::SetHP(float NewHP)
+{
+	CurrentHP = NewHP;
+	if (CurrentHP <= 0.f)
+	{
+		CurrentHP = 0.f;
+		Dead();
+	}
+
+	if (CurrentHP >= MaxHP)
+	{
+		CurrentHP = MaxHP;
+	}
+}
+
+void AMainCharacter::SetMP(float NewMP)
+{
+	CurrentMP = NewMP;
+
+	if (CurrentMP <= 0.f)
+	{
+		CurrentMP = 0.f;
+	}
+
+	if (CurrentMP >= MaxMP)
+	{
+		CurrentMP = MaxMP;
 	}
 }
 
