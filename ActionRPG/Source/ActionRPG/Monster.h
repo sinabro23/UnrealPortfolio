@@ -108,6 +108,8 @@ public:
 	void WidgetTurnOn();
 	void WidgetTurnOff();
 
+	void SetAttackDamage(float NewDamage);
+
 	FVector OriginVector;
 	FVector GetOriginVector();
 	UFUNCTION()

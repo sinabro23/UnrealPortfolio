@@ -25,4 +25,5 @@ ATroll::ATroll()
 		GetMesh()->SetAnimInstanceClass(TrollAnim.Class);
 	}
 
+	SetAttackDamage(5.f);
 }

@@ -25,7 +25,7 @@ public:
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 
-private:
+protected:
 
 	UPROPERTY()
 	class UBehaviorTree* BTAsset;

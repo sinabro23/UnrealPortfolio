@@ -23,4 +23,6 @@ AGrunt::AGrunt()
 	{
 		GetMesh()->SetAnimInstanceClass(GruntAnim.Class);
 	}
+
+	SetAttackDamage(7.f);
 }

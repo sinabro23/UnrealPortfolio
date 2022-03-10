@@ -326,6 +326,11 @@ FVector AMonster::GetOriginVector()
 	return FVector();
 }
 
+void AMonster::SetAttackDamage(float NewDamage)
+{
+	AttackDamage = NewDamage;
+}
+
 void AMonster::WidgetTurnOff()
 {
 	HPBar->SetVisibility(false);

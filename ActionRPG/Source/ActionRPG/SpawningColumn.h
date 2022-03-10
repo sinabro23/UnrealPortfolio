@@ -42,4 +42,5 @@ public:
 
 	void SpawnMonster();
 
+	bool IsSpawnOn = true;
 };

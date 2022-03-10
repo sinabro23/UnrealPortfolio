@@ -34,7 +34,6 @@ ASpawningColumn::ASpawningColumn()
 void ASpawningColumn::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ASpawningColumn::PostInitializeComponents()
@@ -48,6 +47,9 @@ void ASpawningColumn::PostInitializeComponents()
 void ASpawningColumn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!IsSpawnOn)
+		return;
 
 	MonsterCheck();
 
