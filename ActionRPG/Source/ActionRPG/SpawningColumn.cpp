@@ -6,6 +6,11 @@
 #include "Monster.h"
 #include "MainCharacter.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Troll.h"
+#include "Grunt.h"
+#include "NavigationSystem.h"
+
 // Sets default values
 ASpawningColumn::ASpawningColumn()
 {
@@ -50,21 +55,15 @@ void ASpawningColumn::Tick(float DeltaTime)
 
 	if (MonsterCount <= 0)
 	{
-		MonsterCount = 0;	
+		MonsterCount = 0;
+
+		ATroll* SpawnedTroll = GetWorld()->SpawnActor<ATroll>(GetRandomPoint(), FRotator::ZeroRotator);
+		AGrunt* SpawnedGrunt = GetWorld()->SpawnActor<AGrunt>(GetRandomPoint(), FRotator::ZeroRotator);
 		
 	}
 
 }
 
-FVector ASpawningColumn::GetSpawnPoint()
-{
-	//FVector Extent = 
-	//FVector Origin = SpawningBox->GetComponentLocation();
-	//FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox(Origin, Extent);
-
-	//return RandomPoint;
-	return FVector();
-}
 
 void ASpawningColumn::MonsterCheck()
 {
@@ -90,12 +89,35 @@ void ASpawningColumn::MonsterCheck()
 			//	UE_LOG(LogTemp, Warning, TEXT("Monster Exist"));
 				Count++;
 			}
+			
 		}
-
 		MonsterCount = Count;
+	}
+	else
+	{
+		MonsterCount = 0;
 	}
 
 	DrawDebugSphere(GetWorld(), Center, DetectRange, 16, FColor::Blue, false, 1.f);
+}
+
+FVector ASpawningColumn::GetRandomPoint()
+{
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+	if (nullptr == NavSystem)
+		return FVector::ZeroVector;
+
+	FNavLocation RandomLocation;
+
+	if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 600.f, RandomLocation))
+	{
+		return RandomLocation;
+	}
+	else
+	{
+		return FVector::ZeroVector;
+	}
+
 }
 
 int32 ASpawningColumn::GetMonsterCount()

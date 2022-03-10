@@ -163,7 +163,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	int32 HPPotionCount = 3;
 
-	float AttackDamage = 5.f;
+	float AttackDamage = 15.f;
 	float HPPotionHealth = 15.f;
 
 
