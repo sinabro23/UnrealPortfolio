@@ -79,6 +79,7 @@ AMonster::AMonster()
 
 	LockOnParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LOCKONPARTICLE"));
 	LockOnParticle->SetupAttachment(GetMesh());
+	LockOnParticle->SetRelativeRotation(FRotator(0.0f, 90.f, 0.0f));
 	LockOnParticle->bAutoActivate = true;
 	LockOnParticle->SetVisibility(false);
 

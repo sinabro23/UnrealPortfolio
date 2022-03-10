@@ -22,6 +22,7 @@ ASpawningColumn::ASpawningColumn()
 		Mesh->SetStaticMesh(SM_COLUMN.Object);
 	}
 
+	
 }
 
 // Called when the game starts or when spawned
@@ -49,12 +50,8 @@ void ASpawningColumn::Tick(float DeltaTime)
 
 	if (MonsterCount <= 0)
 	{
-		MonsterCount = 0;
+		MonsterCount = 0;	
 		
-		for (int i = 0; i < 2; i++)
-		{
-			
-		}
 	}
 
 }
