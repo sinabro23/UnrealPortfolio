@@ -515,6 +515,36 @@ void AMainCharacter::RMBSkill()
 	MainAnim->RMBSkillMontagePlay();
 	SetMP(CurrentMP - 15.f);
 
+	FVector Center = GetActorLocation();
+	TArray<FOverlapResult> HitResults;
+	FCollisionQueryParams CollsionQueryParam(NAME_None, false, this);
+
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		HitResults,
+		Center,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(RMBSkillRange),
+		CollsionQueryParam
+	);
+
+
+	if (bResult)
+	{
+		for (auto HitResult : HitResults)
+		{
+			if (HitResult.Actor.IsValid())
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+
+				FDamageEvent DamageEvent;
+				HitResult.Actor->TakeDamage(RMBSkillDamage, DamageEvent, GetController(), this);
+			}
+		}
+	}
+
+	DrawDebugSphere(GetWorld(), Center, RMBSkillRange, 16, FColor::Green, false, 1.f);
+
 	bIsAttacking = true;
 }
 

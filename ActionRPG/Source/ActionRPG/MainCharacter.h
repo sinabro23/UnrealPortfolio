@@ -166,6 +166,8 @@ private:
 	int32 HPPotionCount = 3;
 
 	float AttackDamage = 15.f;
+	float RMBSkillDamage = 26.f;
+	float RMBSkillRange = 250.f;
 	float HPPotionHealth = 15.f;
 
 public:
