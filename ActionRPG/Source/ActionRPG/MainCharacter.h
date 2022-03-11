@@ -65,6 +65,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
 	class USoundCue* AttackSound;
 
+	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* RMBSkillParticle;
+
 
 private:
 	int32 AttackSectionIndex = 0;

@@ -18,6 +18,8 @@
 #include "BlessingStatue.h"
 #include "MainSaveGame.h"
 #include "HPPotion.h"
+#include "Particles/ParticleSystemComponent.h"
+
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
@@ -86,6 +88,16 @@ AMainCharacter::AMainCharacter()
 	AttackRadius = 50.f;
 
 	LockOnLookAtRotation = FRotator(0.0f);
+
+	RMBSkillParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("RMBSKILLPARTICLE"));
+	RMBSkillParticle->SetupAttachment(GetRootComponent());
+	RMBSkillParticle->bAutoActivate = false;
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_RMB(TEXT("ParticleSystem'/Game/_Game/FX/P_Kwang_LightStrike_Burst.P_Kwang_LightStrike_Burst'"));
+	if (PS_RMB.Succeeded())
+	{
+		RMBSkillParticle->SetTemplate(PS_RMB.Object);
+	}
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus NewStatus)
@@ -155,6 +167,9 @@ void AMainCharacter::PostInitializeComponents()
 	NearRangeSphere->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnSphereOverlappedForNear);
 	NearRangeSphere->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::OnSphereEndOverlappedForNear);
 
+	FName WeaponSocket(TEXT("weapon_particle"));
+	RMBSkillParticle->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+	
 }
 
 float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -528,6 +543,7 @@ void AMainCharacter::RMBSkill()
 		CollsionQueryParam
 	);
 
+	RMBSkillParticle->Activate(true);
 
 	if (bResult)
 	{
