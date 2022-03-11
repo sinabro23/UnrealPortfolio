@@ -140,7 +140,10 @@ public:
 	void Dead();
 
 	void HPPotion();
+	void MPPotion();
 	void GetHPPotion();
+	void GetMPPotion();
+	
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	
@@ -174,10 +177,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	int32 HPPotionCount = 3;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	int32 MPPotionCount = 3;
+
 	float AttackDamage = 40.f;
 	float RMBSkillDamage = 50.f;
 	float RMBSkillRange = 800.f;
-	float HPPotionHealth = 15.f;
+	float HPPotionHealth = 30.f;
+	float MPPotionHealth = 30.f;
 
 public:
 

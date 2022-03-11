@@ -283,6 +283,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("TestKey2"), EInputEvent::IE_Pressed, this, &AMainCharacter::LoadGame);
 
 	PlayerInputComponent->BindAction(TEXT("HPPotion"), EInputEvent::IE_Pressed, this, &AMainCharacter::HPPotion);
+	PlayerInputComponent->BindAction(TEXT("MPPotion"), EInputEvent::IE_Pressed, this, &AMainCharacter::MPPotion);
 
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &AMainCharacter::CapslockKeyDown);
 	//PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &AMainCharacter::CapslockKeyUp);
@@ -620,9 +621,28 @@ void AMainCharacter::HPPotion()
 
 }
 
+void AMainCharacter::MPPotion()
+{
+	if (MPPotionCount <= 0)
+	{
+		MPPotionCount = 0;
+		return;
+	}
+	else
+	{
+		MPPotionCount--;
+		SetMP(CurrentMP += MPPotionHealth);
+	}
+}
+
 void AMainCharacter::GetHPPotion()
 {
 	HPPotionCount += 1;
+}
+
+void AMainCharacter::GetMPPotion()
+{
+	MPPotionCount += 1;
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HPPotion.h"
+#include "MPPotion.h"
 #include "Components/BoxComponent.h"
 #include "MainCharacter.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
-AHPPotion::AHPPotion()
+AMPPotion::AMPPotion()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGER"));
@@ -20,7 +20,7 @@ AHPPotion::AHPPotion()
 	Trigger->SetHiddenInGame(false);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_HEALTHPOTION(TEXT("StaticMesh'/Game/_Game/Background/PotionHealth.PotionHealth'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_HEALTHPOTION(TEXT("StaticMesh'/Game/_Game/Background/PotionRegen.PotionRegen'"));
 	if (SM_HEALTHPOTION.Succeeded())
 	{
 		Mesh->SetStaticMesh(SM_HEALTHPOTION.Object);
@@ -28,36 +28,36 @@ AHPPotion::AHPPotion()
 
 	Mesh->SetupAttachment(GetRootComponent());
 	Mesh->SetRelativeLocation(FVector(0.0f, 0.0f, -11.f));
-	
+
 	HPPotionParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HPPOTIONPARTICLE"));
 	HPPotionParticle->SetupAttachment(GetRootComponent());
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_HPPOTION(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_Magic_Glow.P_Status_Magic_Glow'"));
-	if (PS_HPPOTION.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_MPPOTION(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_Magic_Glow.P_Status_Magic_Glow'"));
+	if (PS_MPPOTION.Succeeded())
 	{
-		HPPotionParticle->SetTemplate(PS_HPPOTION.Object);
+		HPPotionParticle->SetTemplate(PS_MPPOTION.Object);
 	}
 }
 
 // Called when the game starts or when spawned
-void AHPPotion::BeginPlay()
+void AMPPotion::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
-void AHPPotion::PostInitializeComponents()
+void AMPPotion::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AHPPotion::OnCharacterOverlap);
+	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AMPPotion::OnCharacterOverlap);
 }
 
-void AHPPotion::OnCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AMPPotion::OnCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto Character = Cast<AMainCharacter>(OtherActor);
 	if (Character)
 	{
-		Character->GetHPPotion();
+		Character->GetMPPotion();
 		Destroy();
 	}
 }

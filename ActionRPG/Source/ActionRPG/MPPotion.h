@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "HPPotion.generated.h"
+#include "MPPotion.generated.h"
 
 UCLASS()
-class ACTIONRPG_API AHPPotion : public AActor
+class ACTIONRPG_API AMPPotion : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	// Sets default values for this actor's properties
-	AHPPotion();
+	AMPPotion();
 
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	UStaticMeshComponent* Mesh;
@@ -28,8 +28,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
-	
+
 public:
 	UFUNCTION()
 	void OnCharacterOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 };
