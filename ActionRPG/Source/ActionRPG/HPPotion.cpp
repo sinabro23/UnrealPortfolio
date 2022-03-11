@@ -20,7 +20,7 @@ AHPPotion::AHPPotion()
 	Trigger->SetHiddenInGame(false);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_HEALTHPOTION(TEXT("StaticMesh'/Game/_Game/Background/PotionHealth.PotionHealth'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_HEALTHPOTION(TEXT("StaticMesh'/Game/_Game/Background/PotionMisc.PotionMisc'"));
 	if (SM_HEALTHPOTION.Succeeded())
 	{
 		Mesh->SetStaticMesh(SM_HEALTHPOTION.Object);

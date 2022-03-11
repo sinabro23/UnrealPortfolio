@@ -12,6 +12,7 @@
 #include "MonsterNameWidget.h"
 #include "DrawDebugHelpers.h"
 #include "HPPotion.h"
+#include "MPPotion.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -298,7 +299,22 @@ void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 void AMonster::SpawnItem()
 {
 	FVector Loctaion = GetActorLocation() + (-1.f * GetActorUpVector()) * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	AHPPotion* HPPotion = GetWorld()->SpawnActor<AHPPotion>(Loctaion, FRotator::ZeroRotator);
+
+	if (ShouldHappenInPercent(50))
+	{
+		if (ShouldHappenInPercent(50))
+		{
+			AHPPotion* HPPotion = GetWorld()->SpawnActor<AHPPotion>(Loctaion, FRotator::ZeroRotator);
+		}
+		else
+		{
+			AMPPotion* MPPotion = GetWorld()->SpawnActor<AMPPotion>(Loctaion, FRotator::ZeroRotator);
+		}
+	}
+	else
+	{
+		// µ· ½ºÆù µÉ È®·ü
+	}
 }
 
 bool AMonster::IsDead()
@@ -360,4 +376,9 @@ void AMonster::MissEnemy()
 {
 	//ExclamationMark->SetVisibility(false);
 	ExclamationMark->Deactivate();
+}
+
+bool AMonster::ShouldHappenInPercent(int percentage)
+{
+	return (FMath::RandRange(1, 100 / percentage) == 1 ? true : false);
 }

@@ -98,6 +98,7 @@ public:
 	bool bIsDead = false;
 	bool IsDead();
 
+	bool ShouldHappenInPercent(int percentage);
 
 	UFUNCTION(BlueprintCallable)
 	FString GetMonsterName();
