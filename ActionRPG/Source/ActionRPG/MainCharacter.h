@@ -65,8 +65,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
 	class USoundCue* AttackSound;
 
-	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* RMBSkillParticle;
+
+	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UParticleSystem* RMBSkillFX;
 
 
 private:
@@ -169,8 +172,8 @@ private:
 	int32 HPPotionCount = 3;
 
 	float AttackDamage = 15.f;
-	float RMBSkillDamage = 26.f;
-	float RMBSkillRange = 250.f;
+	float RMBSkillDamage = 13.f;
+	float RMBSkillRange = 800.f;
 	float HPPotionHealth = 15.f;
 
 public:

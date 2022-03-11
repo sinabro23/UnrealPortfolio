@@ -19,6 +19,7 @@
 #include "MainSaveGame.h"
 #include "HPPotion.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -97,6 +98,12 @@ AMainCharacter::AMainCharacter()
 	if (PS_RMB.Succeeded())
 	{
 		RMBSkillParticle->SetTemplate(PS_RMB.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_RMBFX(TEXT("ParticleSystem'/Game/_Game/FX/P_Kwang_LightStrike_Burst_Holding.P_Kwang_LightStrike_Burst_Holding'"));
+	if (PS_RMBFX.Succeeded())
+	{
+		RMBSkillFX = PS_RMBFX.Object;
 	}
 }
 
@@ -555,6 +562,7 @@ void AMainCharacter::RMBSkill()
 
 				FDamageEvent DamageEvent;
 				HitResult.Actor->TakeDamage(RMBSkillDamage, DamageEvent, GetController(), this);
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RMBSkillFX, HitResult.Actor->GetActorLocation(), FRotator::ZeroRotator, true);
 			}
 		}
 	}
