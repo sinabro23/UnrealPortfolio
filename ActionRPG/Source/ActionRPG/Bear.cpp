@@ -31,5 +31,8 @@ ABear::ABear()
 	GetCapsuleComponent()->SetCapsuleHalfHeight(120.f);
 
 
-	SetAttackDamage(7.f);
+	SetAttackDamage(9.f);
+	SetMovementSpeed(600.f);
+	SetMaxHP(240.f);
+	SetHP(MaxHP);
 }

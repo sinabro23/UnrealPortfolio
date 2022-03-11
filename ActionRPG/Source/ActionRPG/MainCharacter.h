@@ -71,6 +71,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	UParticleSystem* RMBSkillFX;
 
+	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* BuffParticle;
+
 
 private:
 	int32 AttackSectionIndex = 0;
@@ -171,8 +174,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	int32 HPPotionCount = 3;
 
-	float AttackDamage = 15.f;
-	float RMBSkillDamage = 13.f;
+	float AttackDamage = 40.f;
+	float RMBSkillDamage = 50.f;
 	float RMBSkillRange = 800.f;
 	float HPPotionHealth = 15.f;
 

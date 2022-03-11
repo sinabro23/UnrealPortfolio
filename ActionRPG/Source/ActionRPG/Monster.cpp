@@ -23,7 +23,7 @@ AMonster::AMonster()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 
 	AIControllerClass = AMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -276,6 +276,17 @@ void AMonster::AttackHitCheck()
 			HitResult.Actor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
 		}
 	}
+}
+
+void AMonster::SetMovementSpeed(float NewSpeed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	MovementSpeed = NewSpeed;
+}
+
+void AMonster::SetMaxHP(float NewHP)
+{
+	MaxHP = NewHP;
 }
 
 void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

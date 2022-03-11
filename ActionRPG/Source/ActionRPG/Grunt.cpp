@@ -25,4 +25,7 @@ AGrunt::AGrunt()
 	}
 
 	SetAttackDamage(7.f);
+	SetMovementSpeed(400.f);
+	SetMaxHP(120.f);
+	SetHP(MaxHP);
 }

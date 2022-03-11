@@ -33,6 +33,9 @@ public:
 
 	float DetectRange = 1500.f;
 
+	UPROPERTY(VisibleAnywhere)
+	class UBoxComponent* Trigger;
+
 public:
 	void MonsterCheck();
 
@@ -40,7 +43,7 @@ public:
 
 	int32 GetMonsterCount();
 
-	void SpawnMonster();
+	virtual void SpawnMonster();
 
 	bool IsSpawnOn = true;
 };

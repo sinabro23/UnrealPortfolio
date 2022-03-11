@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* TextWidget;
 
+	UPROPERTY(VisibleAnywhere)
+	class UBoxComponent* Trigger;
+
 public:
 
 	void TurnOnWidget();

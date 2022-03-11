@@ -105,6 +105,16 @@ AMainCharacter::AMainCharacter()
 	{
 		RMBSkillFX = PS_RMBFX.Object;
 	}
+
+	BuffParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BUFFPARTICLE"));
+	BuffParticle->SetupAttachment(GetRootComponent());
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_BUFF(TEXT("ParticleSystem'/Game/_Game/FX/P_Status_LevelUp.P_Status_LevelUp'"));
+	if (PS_BUFF.Succeeded())
+	{
+		BuffParticle->SetTemplate(PS_BUFF.Object);
+	}
+	BuffParticle->bAutoActivate = false;
+
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus NewStatus)
@@ -524,6 +534,7 @@ void AMainCharacter::LockOn()
 
 void AMainCharacter::Blessed()
 {
+	BuffParticle->Activate(true);
 	SetHP(MaxHP);
 	SetMP(MaxMP);
 	CurrentStamina = MaxStamina;

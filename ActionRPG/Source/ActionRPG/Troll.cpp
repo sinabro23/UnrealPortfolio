@@ -26,4 +26,7 @@ ATroll::ATroll()
 	}
 
 	SetAttackDamage(5.f);
+	SetMovementSpeed(250.f);
+	SetMaxHP(200.f);
+	SetHP(MaxHP);
 }

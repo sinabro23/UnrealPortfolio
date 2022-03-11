@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "MainCharacter.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ABlessingStatue::ABlessingStatue()
@@ -32,6 +33,11 @@ ABlessingStatue::ABlessingStatue()
 		TextWidget->SetWidgetClass(UW_BLESSTEXT.Class);
 		TextWidget->SetDrawSize(FVector2D(500.f, 100.f));
 	}
+
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGER"));
+	Trigger->SetupAttachment(GetRootComponent());
+	Trigger->SetBoxExtent(FVector(400.f, 400.f, 200.f));
+	Trigger->SetHiddenInGame(false);
 }
 
 // Called when the game starts or when spawned

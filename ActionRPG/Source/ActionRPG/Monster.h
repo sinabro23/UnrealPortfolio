@@ -78,6 +78,12 @@ protected:
 	float MaxHP = 50.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float AttackDamage = 10.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	float MovementSpeed = 10.f;
+
+	void SetAttackDamage(float NewDamage);
+	void SetMovementSpeed(float NewSpeed);
+	void SetMaxHP(float NewHP);
 	// 피관련되는건 무조건 SetHP로 호출
 public:
 	void SetHP(float NewHP);
@@ -108,7 +114,7 @@ public:
 	void WidgetTurnOn();
 	void WidgetTurnOff();
 
-	void SetAttackDamage(float NewDamage);
+
 
 	FVector OriginVector;
 	FVector GetOriginVector();

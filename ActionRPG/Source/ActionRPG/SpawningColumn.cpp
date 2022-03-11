@@ -10,6 +10,7 @@
 #include "Troll.h"
 #include "Grunt.h"
 #include "NavigationSystem.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ASpawningColumn::ASpawningColumn()
@@ -26,8 +27,6 @@ ASpawningColumn::ASpawningColumn()
 	{
 		Mesh->SetStaticMesh(SM_COLUMN.Object);
 	}
-
-	
 }
 
 // Called when the game starts or when spawned
@@ -89,7 +88,6 @@ void ASpawningColumn::MonsterCheck()
 			
 		}
 		MonsterCount = Count;
-
 	
 	}
 	else
@@ -98,6 +96,7 @@ void ASpawningColumn::MonsterCheck()
 
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 
+			SpawnMonster();
 			SpawnMonster();
 			SpawnMonster();
 
@@ -134,7 +133,7 @@ int32 ASpawningColumn::GetMonsterCount()
 void ASpawningColumn::SpawnMonster()
 {
 	ATroll* Troll = GetWorld()->SpawnActor<ATroll>(GetRandomPoint(), FRotator::ZeroRotator);
-	AGrunt* Grunt = GetWorld()->SpawnActor<AGrunt>(GetRandomPoint(), FRotator::ZeroRotator);
+	AGrunt* Grunt = GetWorld()->SpawnActor<AGrunt>(GetRandomPoint() + FVector(0.0f, 0.0f, 100.f), FRotator::ZeroRotator);
 	
 }
 
