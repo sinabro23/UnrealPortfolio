@@ -2,20 +2,61 @@
 
 
 #include "PotionShopWidget.h"
+#include "Components/Button.h"
+#include "MainPlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "MainCharacter.h"
 
-NativeConstruct::NativeConstruct()
+void UPotionShopWidget::NativeConstruct()
 {
+	Super::NativeConstruct();
+	
+	HPPotionButton = Cast<UButton>(GetWidgetFromName(TEXT("HPPotionbtn")));
+	if (HPPotionButton)
+	{
+		HPPotionButton->OnClicked.AddDynamic(this, &UPotionShopWidget::OnHPPotionButtonClicked);
+	}
 
+	MPPotionButton = Cast<UButton>(GetWidgetFromName(TEXT("MPPotionbtn")));
+	if (MPPotionButton)
+	{
+		MPPotionButton->OnClicked.AddDynamic(this, &UPotionShopWidget::OnMPPotionButtonClicked);
+	}
+
+	ReturnButton = Cast<UButton>(GetWidgetFromName(TEXT("Exitbtn")));
+	if (ReturnButton)
+	{
+		ReturnButton->OnClicked.AddDynamic(this, &UPotionShopWidget::OnReturnButtonClicked);
+	}
 }
 
 void UPotionShopWidget::OnHPPotionButtonClicked()
 {
+	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	AMainCharacter* Character = Cast<AMainCharacter>(Player);
+	if (Character)
+	{
+		Character->GetHPPotion();
+	}
 }
 
 void UPotionShopWidget::OnMPPotionButtonClicked()
 {
+	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	AMainCharacter* Character = Cast<AMainCharacter>(Player);
+	if (Character)
+	{
+		Character->GetMPPotion();
+	}
 }
 
 void UPotionShopWidget::OnReturnButtonClicked()
 {
+	auto MainController = Cast<AMainPlayerController>(GetOwningPlayer());
+	if (MainController)
+	{
+		RemoveFromParent();
+		MainController->ChangeInputMode(true);
+		MainController->SetPause(false);
+	}
 }

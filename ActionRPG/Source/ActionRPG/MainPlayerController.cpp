@@ -4,12 +4,20 @@
 #include "MainPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "MainGameplayWidget.h"
+#include "PotionShopWidget.h"
+
 AMainPlayerController::AMainPlayerController()
 {
 	static ConstructorHelpers::FClassFinder<UMainGameplayWidget> UI_MENU_C(TEXT("WidgetBlueprint'/Game/_Game/UI/UI_Menu.UI_Menu_C'"));
 	if (UI_MENU_C.Succeeded())
 	{
 		MenuWidgetClass = UI_MENU_C.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UPotionShopWidget> UI_POTIONSHOP_C(TEXT("WidgetBlueprint'/Game/_Game/UI/PotionShopWidget.PotionShopWidget_C'"));
+	if (UI_POTIONSHOP_C.Succeeded())
+	{
+		PotionShopWidgetClass = UI_POTIONSHOP_C.Class;
 	}
 
 }
@@ -34,6 +42,7 @@ void AMainPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction(TEXT("GamePause"), EInputEvent::IE_Pressed, this, &AMainPlayerController::OnGamePause);
+	InputComponent->BindAction(TEXT("TestPotionShop"), EInputEvent::IE_Pressed, this, &AMainPlayerController::OnPotionShop);
 }
 
 void AMainPlayerController::OnGamePause()
@@ -42,6 +51,18 @@ void AMainPlayerController::OnGamePause()
 	if (MenuWidget)
 	{
 		MenuWidget->AddToViewport(3);
+
+		SetPause(true);
+		ChangeInputMode(false);
+	}
+}
+
+void AMainPlayerController::OnPotionShop()
+{
+	PotionShopWidget = CreateWidget<UPotionShopWidget>(this, PotionShopWidgetClass);
+	if (PotionShopWidget)
+	{
+		PotionShopWidget->AddToViewport(4);
 
 		SetPause(true);
 		ChangeInputMode(false);

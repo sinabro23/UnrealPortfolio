@@ -26,9 +26,9 @@ protected:
 
 protected:
 	UPROPERTY()
-	class UButton* HPPotion;
+	class UButton* HPPotionButton;
 	UPROPERTY()
-	UButton* MPPotion;
+	UButton* MPPotionButton;
 	UPROPERTY()
 	UButton* ReturnButton;
 };
