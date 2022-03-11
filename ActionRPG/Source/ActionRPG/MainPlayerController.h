@@ -40,9 +40,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 	TSubclassOf<class UPotionShopWidget> PotionShopWidgetClass;
 
-private:
+public:
 	void OnGamePause();
 	void OnPotionShop();
+
+
+private:
 
 	UPROPERTY()
 	UMainGameplayWidget* MenuWidget;

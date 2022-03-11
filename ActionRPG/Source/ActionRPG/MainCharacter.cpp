@@ -20,6 +20,7 @@
 #include "HPPotion.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
+#include "MainPlayerController.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -457,6 +458,15 @@ void AMainCharacter::EKeyPressed()
 	{
 		Blessed();
 	}
+
+	if (bCanBuy)
+	{
+		AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController());
+		if (PlayerController)
+		{
+			PlayerController->OnPotionShop();
+		}
+	}
 }
 
 void AMainCharacter::EKeyReleased()
@@ -643,6 +653,11 @@ void AMainCharacter::GetHPPotion()
 void AMainCharacter::GetMPPotion()
 {
 	MPPotionCount += 1;
+}
+
+void AMainCharacter::SetCanBuy(bool Input)
+{
+	bCanBuy = Input;
 }
 
 void AMainCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

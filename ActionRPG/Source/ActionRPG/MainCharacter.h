@@ -107,6 +107,8 @@ private:
 	FTimerHandle DeadTimerHandle;
 
 	bool bIsDead = false;
+
+	bool bCanBuy = false;
 protected:
 	// 카메라 줌 관련
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
@@ -144,6 +146,7 @@ public:
 	void GetHPPotion();
 	void GetMPPotion();
 	
+	void SetCanBuy(bool Input);
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	

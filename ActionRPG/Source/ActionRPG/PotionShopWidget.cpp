@@ -32,8 +32,7 @@ void UPotionShopWidget::NativeConstruct()
 
 void UPotionShopWidget::OnHPPotionButtonClicked()
 {
-	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	AMainCharacter* Character = Cast<AMainCharacter>(Player);
+	AMainCharacter* Character = Cast<AMainCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (Character)
 	{
 		Character->GetHPPotion();
@@ -42,8 +41,7 @@ void UPotionShopWidget::OnHPPotionButtonClicked()
 
 void UPotionShopWidget::OnMPPotionButtonClicked()
 {
-	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	AMainCharacter* Character = Cast<AMainCharacter>(Player);
+	AMainCharacter* Character = Cast<AMainCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (Character)
 	{
 		Character->GetMPPotion();
