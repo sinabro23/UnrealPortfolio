@@ -86,7 +86,8 @@ void AFireBall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	if (Character)
 	{
 		Character->SetHP(Character->GetCurrentHP() - 15.f);
-		Destroy();
 	}
+
+	Destroy();
 }
 

@@ -178,6 +178,7 @@ void AGideon::Death()
 	GAnimInstance->SetDeadAnim();
 	SetCanBeDamaged(false);
 	GideonAIController->StopAI();
+	LockOnParticle->SetVisibility(false);
 
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
 		Destroy();

@@ -610,9 +610,6 @@ void AMainCharacter::LockOn()
 				auto Gideon = Cast<AGideon>(OverlapResult.GetActor());
 				if (Gideon)
 				{
-					//DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Green, false, 0.5f);
-					//DrawDebugPoint(GetWorld(), Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
-					//DrawDebugLine(GetWorld(), Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
 					bIsLockOnBoss = true;
 
 					float GideonDistance = (Gideon->GetActorLocation() - GetActorLocation()).Size();
