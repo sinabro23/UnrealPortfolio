@@ -316,6 +316,11 @@ bool AMainCharacter::IsCharacterInBossRoom()
 	return bIsInBossRoom;
 }
 
+void AMainCharacter::SetCharacterInBossRoom(bool IsIn)
+{
+	bIsInBossRoom = IsIn;
+}
+
 void AMainCharacter::UpDown(float InputValue)
 {
 	if (bIsAttacking || bIsDead)
@@ -433,7 +438,7 @@ void AMainCharacter::AttackHitCheck()
 		{
 			if (HitResult.Actor.IsValid())
 			{
-			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
 
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
@@ -764,6 +769,11 @@ int32 AMainCharacter::GetCoinCounts()
 void AMainCharacter::SetCoins(int32 NewCoin)
 {
 	Coins = NewCoin;
+}
+
+float AMainCharacter::GetCurrentHP()
+{
+	return CurrentHP;
 }
 
 void AMainCharacter::SaveGame()

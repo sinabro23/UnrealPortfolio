@@ -10,6 +10,7 @@
 #include "FireBall.h"
 #include "GideonAniminstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GideonHealthbarWidget.h"
 
 // Sets default values
 AGideon::AGideon()
@@ -33,6 +34,19 @@ AGideon::AGideon()
 
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 
+	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
+	HPBar->SetupAttachment(GetMesh());
+	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 200.f));
+	HPBar->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBar->bAutoActivate = false;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UW_GHPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/MainHUD/GideonHealthbarWidget.GideonHealthbarWidget_C'"));
+	if (UW_GHPBAR.Succeeded())
+	{
+		HPBar->SetWidgetClass(UW_GHPBAR.Class);
+		HPBar->SetDrawSize(FVector2D(500.f, 40.f));
+	}
+
 	static ConstructorHelpers::FClassFinder<UAnimInstance> GideonAnim(TEXT("AnimBlueprint'/Game/_Game/Gideon/Animation/GideonAnim.GideonAnim_C'"));
 	if (GideonAnim.Succeeded())
 	{
@@ -50,7 +64,16 @@ AGideon::AGideon()
 void AGideon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetHP(MaxHP);
+}
+
+float AGideon::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	SetHP(CurrentHP - DamageAmount);
+
+	return DamageAmount;
 }
 
 // Called every frame
@@ -81,9 +104,16 @@ void AGideon::PostInitializeComponents()
 	}
 
 	GideonAIController = Cast<AGideonAIController>(GetController());
+
+	HPBar->InitWidget();
+	auto HPWidget = Cast<UGideonHealthbarWidget>(HPBar->GetUserWidgetObject());
+	if (HPWidget)
+	{
+		HPWidget->BindHP(this);
+	}
 }
 
-void AGideon::FireBall()
+void AGideon::FireFireBall()
 {
 	UGideonAniminstance* Anim = Cast<UGideonAniminstance>(GetMesh()->GetAnimInstance());
 	if (Anim)
@@ -95,11 +125,28 @@ void AGideon::FireBall()
 		FVector TargetLocation = GideonAIController->GetBlackboardComponent()->GetValueAsVector(AGideonAIController::TargetKey);
 		AFireBall* Fireball = GetWorld()->SpawnActor<AFireBall>(GetActorLocation(), FRotator::ZeroRotator);
 		Fireball->SetFireballRotation(GetActorRotation());
+		Fireball->SetOwner(this);
 	}
 }
 
 void AGideon::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	OnAttackEnd.Broadcast();
+}
+
+void AGideon::SetHP(float NewHP)
+{
+	CurrentHP = NewHP;
+	if (CurrentHP < 0)
+	{
+		CurrentHP = 0;
+	}
+
+	OnHPChanged.Broadcast();
+}
+
+float AGideon::GetHPRatio()
+{
+	return CurrentHP / MaxHP;
 }
 

@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Gideon.h"
 #include "MainCharacter.h"
 // Sets default values
 AFireBall::AFireBall()
@@ -40,7 +41,7 @@ void AFireBall::BeginPlay()
 
 		Destroy();
 
-	}), 3.f, false);
+	}), 7.f, false);
 }
 
 // Called every frame
@@ -63,6 +64,11 @@ void AFireBall::PostInitializeComponents()
 }
 
 
+void AFireBall::SetFireballOwner(AGideon* Gideon)
+{
+	FireballOwner = Gideon;
+}
+
 void AFireBall::SetFireballRotation(FRotator Rotator)
 {
 	SetActorRotation(Rotator);
@@ -73,7 +79,7 @@ void AFireBall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	auto Character = Cast<AMainCharacter>(OtherActor);
 	if (Character)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("character overlapped"));
+		Character->SetHP(Character->GetCurrentHP() - 15.f);
 		Destroy();
 	}
 }

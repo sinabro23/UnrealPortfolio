@@ -42,6 +42,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 public:	
 	// Called every frame
@@ -112,9 +113,10 @@ private:
 
 	bool bCanBuy = false;
 
-	bool bIsInBossRoom = true;
+	bool bIsInBossRoom = false;
 public:
 	bool IsCharacterInBossRoom();
+	void SetCharacterInBossRoom(bool IsIn);
 protected:
 	// 카메라 줌 관련
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
@@ -205,6 +207,8 @@ public:
 	void GetCoins(int32 NewCoin);
 	int32 GetCoinCounts();
 	void SetCoins(int32 NewCoin);
+
+	float GetCurrentHP();
 
 
 public:

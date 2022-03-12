@@ -7,7 +7,7 @@
 #include "Gideon.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
 UCLASS()
 class ACTIONRPG_API AGideon : public ACharacter
 {
@@ -20,7 +20,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+public:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,17 +34,31 @@ public:
 	class UGideonAniminstance* GAnimInstance;
 	class AGideonAIController* GideonAIController;
 
+
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent* HPBar;
+
 private:
 	float MovementSpeed = 500.f;
 	int32 AttackSectionIndex = 0;
 public:
-	void FireBall();
+	void FireFireBall();
+
 
 public:
-	FOnAttackEndDelegate OnAttackEnd;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	float CurrentHP = 500.f;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	float MaxHP = 500.f;
 public:
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	void SetHP(float NewHP);
+	float GetHPRatio();
+
+public:
+	FOnHPChangedDelegate OnHPChanged;
+	FOnAttackEndDelegate OnAttackEnd;
 };

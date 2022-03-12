@@ -17,7 +17,7 @@ EBTNodeResult::Type UBTTASK_SingleProjectileAttack::ExecuteTask(UBehaviorTreeCom
 	if (nullptr == Gideon)
 		return EBTNodeResult::Failed;
 
-	Gideon->FireBall();
+	Gideon->FireFireBall();
 	IsAttacking = true;
 	Gideon->OnAttackEnd.AddLambda([this]() -> void {
 		IsAttacking = false;
