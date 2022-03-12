@@ -47,3 +47,16 @@ void AGideonAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
 }
+
+void AGideonAIController::RunAI()
+{
+}
+
+void AGideonAIController::StopAI()
+{
+	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (nullptr != BehaviorTreeComponent)
+	{
+		BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
+	}
+}

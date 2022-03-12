@@ -38,9 +38,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* HPBar;
 
+	FTimerHandle DeadTimerHandle;
 private:
 	float MovementSpeed = 500.f;
 	int32 AttackSectionIndex = 0;
+
+	bool bIsDead = false;
 public:
 	void FireFireBall();
 
@@ -58,6 +61,9 @@ public:
 	void SetHP(float NewHP);
 	float GetHPRatio();
 
+	void Death();
+
+	void SetHPBarVisiblity(bool Visibility);
 public:
 	FOnHPChangedDelegate OnHPChanged;
 	FOnAttackEndDelegate OnAttackEnd;

@@ -7,6 +7,7 @@
 #include "MainCharacter.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Gideon.h"
 
 UBTService_CharacterInBossRoom::UBTService_CharacterInBossRoom()
 {
@@ -21,7 +22,7 @@ void UBTService_CharacterInBossRoom::TickNode(UBehaviorTreeComponent& OwnerComp,
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
 	if (nullptr == ControllingPawn)
 		return;
-
+	
 	AMainCharacter* Character = Cast<AMainCharacter>(UGameplayStatics::GetPlayerPawn(ControllingPawn->GetWorld(), 0));
 	if (Character->GetController()->IsPlayerController())
 	{
@@ -29,6 +30,16 @@ void UBTService_CharacterInBossRoom::TickNode(UBehaviorTreeComponent& OwnerComp,
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(AGideonAIController::TargetKey, Character);
 		}
+
+		if (Character->IsCharacterInBossRoom())
+		{
+			auto Gideon = Cast<AGideon>(ControllingPawn);
+			if (Gideon)
+			{
+				Gideon->SetHPBarVisiblity(true);
+			}
+		}
+	
 	}
 
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(ControllingPawn->GetWorld());

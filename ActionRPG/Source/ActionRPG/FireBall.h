@@ -38,6 +38,9 @@ public:
 	FVector CurrentLocation;
 
 	UPROPERTY()
+	FVector OriginVector;
+
+	UPROPERTY()
 	class AGideon* FireballOwner;
 
 	UPROPERTY()

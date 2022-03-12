@@ -32,4 +32,8 @@ protected:
 
 	UPROPERTY()
 	class UBlackboardData* BBAsset;
+
+public:
+	void RunAI();
+	void StopAI();
 };

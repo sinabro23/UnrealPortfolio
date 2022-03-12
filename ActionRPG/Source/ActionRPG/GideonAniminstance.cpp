@@ -28,6 +28,7 @@ void UGideonAniminstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UGideonAniminstance::SetDeadAnim()
 {
+	bIsDead = true;
 }
 
 void UGideonAniminstance::PlayAttackMontage()

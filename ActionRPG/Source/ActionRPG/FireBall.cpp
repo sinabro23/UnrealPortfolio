@@ -33,8 +33,9 @@ AFireBall::AFireBall()
 void AFireBall::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	CurrentLocation = this->GetActorLocation(); // To save where ever the actor is in the viewport
+
+	OriginVector = GetActorLocation();
+	CurrentLocation = GetActorLocation(); // To save where ever the actor is in the viewport
 	speed = 1000.0f;
 	
 	GetWorld()->GetTimerManager().SetTimer(DeadTimer, FTimerDelegate::CreateLambda([this]()-> void {
@@ -53,6 +54,11 @@ void AFireBall::Tick(float DeltaTime)
 	CurrentLocation += GetActorForwardVector() * speed * DeltaTime; // use X Y or Z.  Use -= to go the opposite way
 
 	SetActorLocation(CurrentLocation);
+
+	if ((CurrentLocation - OriginVector).Size() >= 5000.f)
+	{
+		Destroy();
+	}
 
 }
 

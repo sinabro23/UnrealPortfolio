@@ -11,6 +11,7 @@
 #include "GideonAniminstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GideonHealthbarWidget.h"
+#include "TimerManager.h"
 
 // Sets default values
 AGideon::AGideon()
@@ -38,7 +39,7 @@ AGideon::AGideon()
 	HPBar->SetupAttachment(GetMesh());
 	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 200.f));
 	HPBar->SetWidgetSpace(EWidgetSpace::Screen);
-	HPBar->bAutoActivate = false;
+	HPBar->SetVisibility(false);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UW_GHPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/MainHUD/GideonHealthbarWidget.GideonHealthbarWidget_C'"));
 	if (UW_GHPBAR.Succeeded())
@@ -140,6 +141,7 @@ void AGideon::SetHP(float NewHP)
 	if (CurrentHP < 0)
 	{
 		CurrentHP = 0;
+		Death();
 	}
 
 	OnHPChanged.Broadcast();
@@ -148,5 +150,25 @@ void AGideon::SetHP(float NewHP)
 float AGideon::GetHPRatio()
 {
 	return CurrentHP / MaxHP;
+}
+
+void AGideon::Death()
+{
+	bIsDead = true;
+	SetActorEnableCollision(false);
+	GetMovementBase()->SetHiddenInGame(false);
+	HPBar->SetHiddenInGame(true);
+	GAnimInstance->SetDeadAnim();
+	SetCanBeDamaged(false);
+	GideonAIController->StopAI();
+
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
+		Destroy();
+	}), 5.f, false);
+}
+
+void AGideon::SetHPBarVisiblity(bool Visibility)
+{
+	HPBar->SetVisibility(Visibility);
 }
 
