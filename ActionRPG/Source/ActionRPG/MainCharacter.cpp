@@ -21,6 +21,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "MainPlayerController.h"
+#include "Gideon.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -236,6 +237,34 @@ void AMainCharacter::Tick(float DeltaTime)
 			
 	}
 
+	if (bIsLockOnBoss)
+	{
+		if (CurrentTargetGideon.IsValid() && !CurrentTargetGideon->IsDead())
+		{
+			float Distance = (GetActorLocation() - CurrentTargetGideon->GetActorLocation()).Size();
+			if (Distance >= 1000.f)
+			{
+				bIsLockOnBoss = false;
+				if (CurrentTargetGideon.IsValid())
+				{
+					CurrentTargetGideon->LockOff();
+					CurrentTargetGideon = nullptr;
+				}
+				return;
+			}
+
+			FRotator LookAtRotation = GetLookAtRotationYaw(CurrentTargetGideon->GetActorLocation());
+			LockOnLookAtRotation = FRotator(GetControlRotation().Pitch, LookAtRotation.Yaw, 0.f);
+
+			GetController()->SetControlRotation(LockOnLookAtRotation);
+		}
+		else
+		{
+			bIsLockOnBoss = false;
+			CurrentTargetGideon = nullptr;
+		}
+	}
+
 	float DeltaStamina = StaminaDrainRate * DeltaTime;
 	if (MovementStatus == EMovementStatus::EMS_SPRINTING)
 	{
@@ -299,7 +328,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::AddControllerYawInput(float Val)
 {
-	if (bIsLockOn)
+	if (bIsLockOn || bIsLockOnBoss)
 		return;
 	Super::AddControllerYawInput(Val);
 }
@@ -361,7 +390,7 @@ void AMainCharacter::Attack()
 
 	if (MainAnim)
 	{
-		if (bIsLockOn)
+		if (bIsLockOn || bIsLockOnBoss)
 		{
 			SetActorRotation(FRotator(0.f, LockOnLookAtRotation.Yaw, 0.f));
 		}
@@ -546,11 +575,67 @@ void AMainCharacter::LockOn()
 			{
 				CurrentTargetMonster->LockOn();
 			}
-		
-			return;
 		}
+	}
 
-		//DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Red, false, 0.5f);
+	if (bIsLockOnBoss)
+	{
+		if (CurrentTargetGideon.IsValid())
+		{
+			CurrentTargetGideon->LockOff();
+		}
+		bIsLockOnBoss = false;
+	}
+	else
+	{
+		if (bIsDead)
+			return;
+
+		FVector Center = GetActorLocation() + Camera->GetForwardVector() * 500.f;
+		TArray<FOverlapResult> OverlapResults;
+		FCollisionQueryParams CollsionQueryParam(NAME_None, false, this);
+		bool bResult = GetWorld()->OverlapMultiByChannel(
+			OverlapResults,
+			Center,
+			FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel4,
+			FCollisionShape::MakeSphere(LockOnRange),
+			CollsionQueryParam
+		);
+
+		if (bResult)
+		{
+			for (auto const& OverlapResult : OverlapResults)
+			{
+				auto Gideon = Cast<AGideon>(OverlapResult.GetActor());
+				if (Gideon)
+				{
+					//DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Green, false, 0.5f);
+					//DrawDebugPoint(GetWorld(), Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
+					//DrawDebugLine(GetWorld(), Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
+					bIsLockOnBoss = true;
+
+					float GideonDistance = (Gideon->GetActorLocation() - GetActorLocation()).Size();
+					if (CurrentTargetGideon.IsValid())
+					{
+						float CurrentTargetDistance = (CurrentTargetGideon->GetActorLocation() - GetActorLocation()).Size();
+						if (GideonDistance < CurrentTargetDistance)
+						{
+							CurrentTargetGideon = Gideon;
+						}
+					}
+					else
+					{
+						CurrentTargetGideon = Gideon;
+					}
+				}
+			}
+
+			if (CurrentTargetGideon.IsValid())
+			{
+				CurrentTargetGideon->LockOn();
+			}
+		}
 	}
 }
 

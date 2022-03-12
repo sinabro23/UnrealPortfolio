@@ -12,6 +12,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GideonHealthbarWidget.h"
 #include "TimerManager.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AGideon::AGideon()
@@ -58,7 +59,18 @@ AGideon::AGideon()
 
 	AIControllerClass = AGideonAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
+	LockOnParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LOCKONPARTICLE"));
+	LockOnParticle->SetupAttachment(GetMesh());
+	LockOnParticle->SetRelativeRotation(FRotator(0.0f, 90.f, 0.0f));
+	LockOnParticle->bAutoActivate = true;
+	LockOnParticle->SetVisibility(false);
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_GLOCKON(TEXT("ParticleSystem'/Game/_Game/FX/P_Targeting_Player_Select.P_Targeting_Player_Select'"));
+	if (PS_GLOCKON.Succeeded())
+	{
+		LockOnParticle->SetTemplate(PS_GLOCKON.Object);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -112,6 +124,11 @@ void AGideon::PostInitializeComponents()
 	{
 		HPWidget->BindHP(this);
 	}
+}
+
+bool AGideon::IsDead()
+{
+	return bIsDead;
 }
 
 void AGideon::FireFireBall()
@@ -172,3 +189,22 @@ void AGideon::SetHPBarVisiblity(bool Visibility)
 	HPBar->SetVisibility(Visibility);
 }
 
+void AGideon::LockOn()
+{
+	if (!bLockOnVisible)
+	{
+		LockOnParticle->SetVisibility(true);
+		bLockOnVisible = true;
+	}
+
+}
+
+void AGideon::LockOff()
+{
+	if (bLockOnVisible)
+	{
+		LockOnParticle->SetVisibility(false);
+		bLockOnVisible = false;
+	}
+
+}

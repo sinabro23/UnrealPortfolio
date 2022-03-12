@@ -34,6 +34,8 @@ public:
 	class UGideonAniminstance* GAnimInstance;
 	class AGideonAIController* GideonAIController;
 
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* LockOnParticle;
 
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* HPBar;
@@ -44,9 +46,13 @@ private:
 	int32 AttackSectionIndex = 0;
 
 	bool bIsDead = false;
+
+
+
+	bool bLockOnVisible = false;
 public:
 	void FireFireBall();
-
+	bool IsDead();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
@@ -64,6 +70,9 @@ public:
 	void Death();
 
 	void SetHPBarVisiblity(bool Visibility);
+
+	void LockOn();
+	void LockOff();
 public:
 	FOnHPChangedDelegate OnHPChanged;
 	FOnAttackEndDelegate OnAttackEnd;
