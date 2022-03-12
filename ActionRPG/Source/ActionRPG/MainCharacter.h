@@ -197,6 +197,8 @@ public:
 	void SetHP(float NewHP);
 	void SetMP(float NewMP);
 	void GetCoins(int32 NewCoin);
+	int32 GetCoinCounts();
+	void SetCoins(int32 NewCoin);
 
 
 public:

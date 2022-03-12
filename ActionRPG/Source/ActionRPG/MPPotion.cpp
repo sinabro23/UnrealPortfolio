@@ -17,7 +17,7 @@ AMPPotion::AMPPotion()
 	RootComponent = Trigger;
 	Trigger->SetBoxExtent(FVector(30.f, 36.f, 22.f));
 	Trigger->SetCollisionProfileName(FName(TEXT("Item")));
-	Trigger->SetHiddenInGame(false);
+	Trigger->SetHiddenInGame(true);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_HEALTHPOTION(TEXT("StaticMesh'/Game/_Game/Background/Potion_3.Potion_3'"));

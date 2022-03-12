@@ -14,7 +14,7 @@ ACoin::ACoin()
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGERR"));
 	Trigger->SetBoxExtent(FVector(50.f, 50.f, 5.f));
 	Trigger->SetCollisionProfileName(FName(TEXT("Item")));
-	Trigger->SetHiddenInGame(false);
+	Trigger->SetHiddenInGame(true);
 	RootComponent = Trigger;
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));

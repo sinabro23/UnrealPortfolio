@@ -103,7 +103,7 @@ void ASpawningColumn::MonsterCheck()
 		}), 2.f, false);
 	}
 
-	DrawDebugSphere(GetWorld(), Center, DetectRange, 16, FColor::Blue, false, 1.f);
+	//DrawDebugSphere(GetWorld(), Center, DetectRange, 16, FColor::Blue, false, 1.f);
 }
 
 FVector ASpawningColumn::GetRandomPoint()

@@ -35,7 +35,12 @@ void UPotionShopWidget::OnHPPotionButtonClicked()
 	AMainCharacter* Character = Cast<AMainCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (Character)
 	{
-		Character->GetHPPotion();
+		if (Character->GetCoinCounts() >= HPPotionPrice)
+		{
+			Character->GetHPPotion();
+			Character->SetCoins(Character->GetCoinCounts() - HPPotionPrice);
+		}
+		
 	}
 }
 
@@ -44,7 +49,11 @@ void UPotionShopWidget::OnMPPotionButtonClicked()
 	AMainCharacter* Character = Cast<AMainCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (Character)
 	{
-		Character->GetMPPotion();
+		if (Character->GetCoinCounts() >= MPPotionPrice)
+		{
+			Character->GetMPPotion();
+			Character->SetCoins(Character->GetCoinCounts() - MPPotionPrice);
+		}
 	}
 }
 

@@ -31,4 +31,8 @@ protected:
 	UButton* MPPotionButton;
 	UPROPERTY()
 	UButton* ReturnButton;
+
+private:
+	int32 HPPotionPrice = 200;
+	int32 MPPotionPrice = 400;
 };

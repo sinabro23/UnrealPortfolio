@@ -384,7 +384,7 @@ void AMainCharacter::AttackHitCheck()
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat(); // ?
 	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 	float DebugLifeTime = 5.f;
-	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
+	//DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
 
 #pragma region SingleAttack
 	//FHitResult HitResult;
@@ -510,9 +510,9 @@ void AMainCharacter::LockOn()
 				auto Monster = Cast<AMonster>(OverlapResult.GetActor());
 				if (Monster)
 				{
-					DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Green, false, 0.5f);
-					DrawDebugPoint(GetWorld(), Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
-					DrawDebugLine(GetWorld(), Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
+					//DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Green, false, 0.5f);
+					//DrawDebugPoint(GetWorld(), Monster->GetActorLocation(), 10.f, FColor::Blue, false, 0.5f);
+					//DrawDebugLine(GetWorld(), Center, Monster->GetActorLocation(), FColor::Blue, false, 0.5f);
 					bIsLockOn = true;
 
 					float MonsterDistance = (Monster->GetActorLocation() - GetActorLocation()).Size();
@@ -539,7 +539,7 @@ void AMainCharacter::LockOn()
 			return;
 		}
 
-		DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Red, false, 0.5f);
+		//DrawDebugSphere(GetWorld(), Center, LockOnRange, 16, FColor::Red, false, 0.5f);
 	}
 }
 
@@ -589,7 +589,7 @@ void AMainCharacter::RMBSkill()
 		}
 	}
 
-	DrawDebugSphere(GetWorld(), Center, RMBSkillRange, 16, FColor::Green, false, 1.f);
+	//DrawDebugSphere(GetWorld(), Center, RMBSkillRange, 16, FColor::Green, false, 1.f);
 
 	bIsAttacking = true;
 }
@@ -748,6 +748,16 @@ void AMainCharacter::SetMP(float NewMP)
 void AMainCharacter::GetCoins(int32 NewCoin)
 {
 	Coins += NewCoin;
+}
+
+int32 AMainCharacter::GetCoinCounts()
+{
+	return Coins;
+}
+
+void AMainCharacter::SetCoins(int32 NewCoin)
+{
+	Coins = NewCoin;
 }
 
 void AMainCharacter::SaveGame()

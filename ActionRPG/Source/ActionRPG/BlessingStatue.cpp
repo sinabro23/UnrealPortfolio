@@ -37,7 +37,7 @@ ABlessingStatue::ABlessingStatue()
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGER"));
 	Trigger->SetupAttachment(GetRootComponent());
 	Trigger->SetBoxExtent(FVector(400.f, 400.f, 200.f));
-	Trigger->SetHiddenInGame(false);
+	Trigger->SetHiddenInGame(true);
 }
 
 // Called when the game starts or when spawned
