@@ -88,11 +88,16 @@ private:
 
 	bool CharacterCanBeDamaged = true;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	bool bIsLockOn = false;
+
 	float LockOnRange = 700.f;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	TWeakObjectPtr<class AMonster> CurrentTargetMonster;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	TWeakObjectPtr<class ABossGidon> CurrentTargetGideon;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FRotator LockOnLookAtRotation;

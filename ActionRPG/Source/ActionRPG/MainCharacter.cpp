@@ -21,6 +21,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "MainPlayerController.h"
+#include "BossGidon.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -232,6 +233,32 @@ void AMainCharacter::Tick(float DeltaTime)
 		{
 			bIsLockOn = false;
 			CurrentTargetMonster = nullptr;
+		}
+
+		if (CurrentTargetGideon.IsValid() && !CurrentTargetGideon->IsDead())
+		{
+			float Distance = (GetActorLocation() - CurrentTargetGideon->GetActorLocation()).Size();
+			if (Distance >= 1000.f)
+			{
+				bIsLockOn = false;
+				if (CurrentTargetGideon.IsValid())
+				{
+					//CurrentTargetGideon->LockOff();
+					CurrentTargetGideon = nullptr;
+				}
+				return;
+			}
+
+			bIsLockOn = true;
+			FRotator LookAtRotation = GetLookAtRotationYaw(CurrentTargetGideon->GetActorLocation());
+			LockOnLookAtRotation = FRotator(GetControlRotation().Pitch, LookAtRotation.Yaw, 0.f);
+
+			GetController()->SetControlRotation(LockOnLookAtRotation);
+		}
+		else
+		{
+			bIsLockOn = false;
+			CurrentTargetGideon = nullptr;
 		}
 	}
 
@@ -527,6 +554,26 @@ void AMainCharacter::LockOn()
 					else
 					{
 						CurrentTargetMonster = Monster;
+					}
+				}
+				// 보스를 타겟할때
+				auto Gideon = Cast<ABossGidon>(OverlapResult.GetActor());
+				if (Gideon)
+				{
+					bIsLockOn = true;
+
+					float GideonDistance = (Gideon->GetActorLocation() - GetActorLocation()).Size();
+					if (CurrentTargetGideon.IsValid())
+					{
+						float CurrentTargetDistance = (CurrentTargetGideon->GetActorLocation() - GetActorLocation()).Size();
+						if (GideonDistance < CurrentTargetDistance)
+						{
+							CurrentTargetGideon = Gideon;
+						}
+					}
+					else
+					{
+						CurrentTargetGideon = Gideon;
 					}
 				}
 			}
