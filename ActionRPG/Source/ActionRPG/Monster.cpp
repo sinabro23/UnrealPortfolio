@@ -114,6 +114,7 @@ void AMonster::BeginPlay()
 
 	OriginVector = GetActorLocation();
 
+
 }
 
 // Called every frame
@@ -164,6 +165,8 @@ void AMonster::PostInitializeComponents()
 	}
 
 	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, HPBarHeight));
+
+
 
 	//LockOnParticle->SetRelativeLocation(FVector(0.0f, 0.0f, 20.f-GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 }

@@ -25,7 +25,8 @@ public:
 	void SetDeadAnim();
 
 	void PlayAttackMontage();
-
+	void JumpToSection(int32 MontageSection);
+	FName GetAttackMontageName(int32 MontageSection);
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;

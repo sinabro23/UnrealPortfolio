@@ -2,14 +2,15 @@
 
 
 #include "GideonAniminstance.h"
-#include "BossGidon.h"
-
+#include "Gideon.h"
 UGideonAniminstance::UGideonAniminstance()
 {
-
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM_GIDEONATTACK(TEXT("AnimMontage'/Game/_Game/Gideon/Animation/AttackMontage.AttackMontage'"));
+	if (AM_GIDEONATTACK.Succeeded())
+	{
+		AttackMontage = AM_GIDEONATTACK.Object;
+	}
 }
-
-
 
 void UGideonAniminstance::NativeUpdateAnimation(float DeltaSeconds)
 {
@@ -18,7 +19,7 @@ void UGideonAniminstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (!::IsValid(Pawn))
 		return;
 
-	auto Gideon = Cast<ABossGidon>(Pawn);
+	auto Gideon = Cast<AGideon>(Pawn);
 	if (Gideon)
 	{
 		CurrentPawnSpeed = Gideon->GetVelocity().Size();
@@ -31,5 +32,22 @@ void UGideonAniminstance::SetDeadAnim()
 
 void UGideonAniminstance::PlayAttackMontage()
 {
+	if (AttackMontage)
+	{
+		Montage_Play(AttackMontage, 1.f);
+	}
 }
+
+void UGideonAniminstance::JumpToSection(int32 MontageSection)
+{
+	FName Name = GetAttackMontageName(MontageSection);
+	Montage_JumpToSection(Name, AttackMontage);
+}
+
+FName UGideonAniminstance::GetAttackMontageName(int32 MontageSection)
+{
+	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
+}
+
+
 

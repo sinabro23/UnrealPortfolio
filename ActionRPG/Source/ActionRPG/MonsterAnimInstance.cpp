@@ -53,7 +53,8 @@ FName UMonsterAnimInstance::GetAttackMontageName(int32 MontageSection)
 	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
 }
 
-void UMonsterAnimInstance::AnimNotify_AttackHitCheck()
+void UMonsterAnimInstance::AnimNotify_AttackCheck()
 {
-	OnAttackHitCheck.Broadcast(); 
+	OnAttackHitCheck.Broadcast();
 }
+

@@ -4,16 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "BossGidon.generated.h"
+#include "Gideon.generated.h"
+
+DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 
 UCLASS()
-class ACTIONRPG_API ABossGidon : public ACharacter
+class ACTIONRPG_API AGideon : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ABossGidon();
+	AGideon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,15 +27,23 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+	virtual void PostInitializeComponents() override;
+
 public:
-	
+	class UGideonAniminstance* GAnimInstance;
+	class AGideonAIController* GideonAIController;
+
 private:
-	float MovementSpeed = 450.f;
-
-	bool bIsDead = false;
+	float MovementSpeed = 500.f;
+	int32 AttackSectionIndex = 0;
+public:
+	void FireBall();
 
 public:
-	bool IsDead();
+	FOnAttackEndDelegate OnAttackEnd;
 
+
+public:
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

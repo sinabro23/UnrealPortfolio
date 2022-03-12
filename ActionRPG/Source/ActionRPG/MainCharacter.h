@@ -97,9 +97,6 @@ private:
 	TWeakObjectPtr<class AMonster> CurrentTargetMonster;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
-	TWeakObjectPtr<class ABossGidon> CurrentTargetGideon;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FRotator LockOnLookAtRotation;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
@@ -114,6 +111,10 @@ private:
 	bool bIsDead = false;
 
 	bool bCanBuy = false;
+
+	bool bIsInBossRoom = true;
+public:
+	bool IsCharacterInBossRoom();
 protected:
 	// 카메라 줌 관련
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)

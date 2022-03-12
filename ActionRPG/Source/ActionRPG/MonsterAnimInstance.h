@@ -27,7 +27,7 @@ public:
 	FName GetAttackMontageName(int32 MontageSection);
 
 	UFUNCTION()
-	void AnimNotify_AttackHitCheck();
+	void AnimNotify_AttackCheck();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;
