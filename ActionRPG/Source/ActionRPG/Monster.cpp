@@ -13,6 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "HPPotion.h"
 #include "MPPotion.h"
+#include "Coin.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -195,6 +196,11 @@ void AMonster::SetHP(float NewHP)
 	OnHPChanged.Broadcast();
 }
 
+void AMonster::SetRemainCoinAmount(int32 Amount)
+{
+	RemainCoinAmount = Amount;
+}
+
 float AMonster::GetHPRatio()
 {
 	return CurrentHP / MaxHP;
@@ -264,7 +270,7 @@ void AMonster::AttackHitCheck()
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat(); // ?
 	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 	float DebugLifeTime = 5.f;
-	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
+	//DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
 
 
 	if (bResult)
@@ -313,7 +319,8 @@ void AMonster::SpawnItem()
 	}
 	else
 	{
-		// µ· ½ºÆù µÉ È®·ü
+		ACoin* Coin = GetWorld()->SpawnActor<ACoin>(Loctaion, FRotator::ZeroRotator);
+		Coin->SetCoinAmount(RemainCoinAmount);
 	}
 }
 

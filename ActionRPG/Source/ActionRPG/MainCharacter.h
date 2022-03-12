@@ -183,6 +183,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	int32 MPPotionCount = 3;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
+	int32 Coins = 1000;
+
 	float AttackDamage = 40.f;
 	float RMBSkillDamage = 50.f;
 	float RMBSkillRange = 800.f;
@@ -193,6 +196,7 @@ public:
 
 	void SetHP(float NewHP);
 	void SetMP(float NewMP);
+	void GetCoins(int32 NewCoin);
 
 
 public:

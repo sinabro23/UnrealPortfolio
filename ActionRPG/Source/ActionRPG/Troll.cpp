@@ -29,4 +29,5 @@ ATroll::ATroll()
 	SetMovementSpeed(250.f);
 	SetMaxHP(200.f);
 	SetHP(MaxHP);
+	SetRemainCoinAmount(240);
 }

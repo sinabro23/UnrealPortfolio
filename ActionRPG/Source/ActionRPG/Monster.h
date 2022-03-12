@@ -9,6 +9,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 
+class ACoin;
 UCLASS()
 class ACTIONRPG_API AMonster : public ACharacter
 {
@@ -84,6 +85,8 @@ protected:
 	void SetAttackDamage(float NewDamage);
 	void SetMovementSpeed(float NewSpeed);
 	void SetMaxHP(float NewHP);
+	int32 RemainCoinAmount = 0;
+	void SetRemainCoinAmount(int32 Amount);
 	// 피관련되는건 무조건 SetHP로 호출
 public:
 	void SetHP(float NewHP);

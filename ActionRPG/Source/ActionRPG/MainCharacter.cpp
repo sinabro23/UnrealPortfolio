@@ -745,6 +745,11 @@ void AMainCharacter::SetMP(float NewMP)
 	}
 }
 
+void AMainCharacter::GetCoins(int32 NewCoin)
+{
+	Coins += NewCoin;
+}
+
 void AMainCharacter::SaveGame()
 {
 	UMainSaveGame* SaveGameInstance = Cast<UMainSaveGame>(UGameplayStatics::CreateSaveGameObject(UMainSaveGame::StaticClass()));

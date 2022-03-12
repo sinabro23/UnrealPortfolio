@@ -28,4 +28,5 @@ AGrunt::AGrunt()
 	SetMovementSpeed(400.f);
 	SetMaxHP(120.f);
 	SetHP(MaxHP);
+	SetRemainCoinAmount(300);
 }
