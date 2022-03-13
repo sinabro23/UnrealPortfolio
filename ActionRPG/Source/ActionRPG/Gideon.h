@@ -70,6 +70,8 @@ public:
 	void MeteorCast();
 	void MeteorFire();
 
+	void TransformPage2();
+
 	void SetCanBeAttacked(bool CanBe);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")

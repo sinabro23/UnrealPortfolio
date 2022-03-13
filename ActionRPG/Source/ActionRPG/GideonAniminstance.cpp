@@ -10,6 +10,12 @@ UGideonAniminstance::UGideonAniminstance()
 	{
 		AttackMontage = AM_GIDEONATTACK.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM_GIDEONTRANSFORM(TEXT("AnimMontage'/Game/_Game/Gideon/Animation/Transfrom.Transfrom'"));
+	if (AM_GIDEONTRANSFORM.Succeeded())
+	{
+		TransformMontage = AM_GIDEONTRANSFORM.Object;
+	}
 }
 
 void UGideonAniminstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -48,6 +54,12 @@ void UGideonAniminstance::PlayMeteorMontage()
 	}
 }
 
+void UGideonAniminstance::PlayTransformMontage()
+{
+	Montage_Play(TransformMontage);
+	Montage_JumpToSection(TEXT("Transform"));
+}
+
 void UGideonAniminstance::JumpToSection(int32 MontageSection)
 {
 	FName Name = GetAttackMontageName(MontageSection);
@@ -69,5 +81,11 @@ void UGideonAniminstance::AnimNotify_MeteorFire()
 {
 	onFireMeteor.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("MeteorFire"));
+}
+
+void UGideonAniminstance::AnimNotify_TransformEnd()
+{
+	onTranformEnd.Broadcast();
+	UE_LOG(LogTemp, Warning, TEXT("TransfromEnd"));
 }
 

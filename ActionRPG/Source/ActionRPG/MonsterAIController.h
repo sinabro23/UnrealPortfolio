@@ -25,6 +25,7 @@ public:
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 
+
 protected:
 
 	UPROPERTY()

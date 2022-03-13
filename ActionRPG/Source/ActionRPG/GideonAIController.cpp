@@ -13,6 +13,7 @@ const FName AGideonAIController::HomePosKey(TEXT("HomePos"));
 const FName AGideonAIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName AGideonAIController::TargetKey(TEXT("Target"));
 const FName AGideonAIController::RandomPosKey(TEXT("RandomPos"));
+const FName AGideonAIController::IsPageChangedKey(TEXT("IsPageChanged"));
 
 AGideonAIController::AGideonAIController()
 {

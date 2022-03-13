@@ -24,7 +24,7 @@ public:
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 	static const FName RandomPosKey;
-
+	static const FName IsPageChangedKey;
 protected:
 
 	UPROPERTY()

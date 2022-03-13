@@ -13,6 +13,7 @@ const FName AMonsterAIController::HomePosKey(TEXT("HomePos"));
 const FName AMonsterAIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName AMonsterAIController::TargetKey(TEXT("Target"));
 
+
 AMonsterAIController::AMonsterAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTOBJECT(TEXT("BehaviorTree'/Game/_Game/Monster/Troll/AI/BT_Troll.BT_Troll'"));

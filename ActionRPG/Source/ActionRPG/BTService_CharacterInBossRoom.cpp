@@ -42,6 +42,15 @@ void UBTService_CharacterInBossRoom::TickNode(UBehaviorTreeComponent& OwnerComp,
 	
 	}
 
+	auto Gideon = Cast<AGideon>(ControllingPawn);
+	if (Gideon)
+	{
+		if (0.5f >= Gideon->GetHPRatio())
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AGideonAIController::IsPageChangedKey, true);
+		}
+	}
+
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(ControllingPawn->GetWorld());
 	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(AGideonAIController::HomePosKey);
 	FNavLocation NextPatrolLocation;

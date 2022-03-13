@@ -9,6 +9,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnMeteorCastDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFireMeteorDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnTransfromEndDelegate);
 /**
  * 
  */
@@ -28,6 +29,7 @@ public:
 
 	void PlayAttackMontage();
 	void PlayMeteorMontage();
+	void PlayTransformMontage();
 	void JumpToSection(int32 MontageSection);
 	FName GetAttackMontageName(int32 MontageSection);
 
@@ -35,6 +37,8 @@ public:
 	void AnimNotify_MeteorCast();
 	UFUNCTION()
 	void AnimNotify_MeteorFire();
+	UFUNCTION()
+	void AnimNotify_TransformEnd();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -46,8 +50,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* TransformMontage;
+
 public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnMeteorCastDelegate OnMeteorCast;
 	FOnFireMeteorDelegate onFireMeteor;
+	FOnTransfromEndDelegate onTranformEnd;
 };
