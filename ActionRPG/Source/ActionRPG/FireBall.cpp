@@ -7,6 +7,8 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Gideon.h"
 #include "MainCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AFireBall::AFireBall()
 {
@@ -27,6 +29,12 @@ AFireBall::AFireBall()
 	{
 		FireballFX->SetTemplate(PS_FIREBALL.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireballHitEffect(TEXT("ParticleSystem'/Game/_Game/Gideon/FX/P_Impact_Enemy_Fire.P_Impact_Enemy_Fire'"));
+	if (PS_FireballHitEffect.Succeeded())
+	{
+		HitEffect = PS_FireballHitEffect.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -37,12 +45,7 @@ void AFireBall::BeginPlay()
 	OriginVector = GetActorLocation();
 	CurrentLocation = GetActorLocation(); // To save where ever the actor is in the viewport
 	speed = 1000.0f;
-	
-	GetWorld()->GetTimerManager().SetTimer(DeadTimer, FTimerDelegate::CreateLambda([this]()-> void {
 
-		Destroy();
-
-	}), 7.f, false);
 }
 
 // Called every frame
@@ -86,6 +89,7 @@ void AFireBall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	if (Character)
 	{
 		Character->SetHP(Character->GetCurrentHP() - 15.f);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, Character->GetActorLocation());
 	}
 
 	Destroy();

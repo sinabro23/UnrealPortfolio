@@ -30,6 +30,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = FX)
 	UParticleSystemComponent* FireballFX;
+
+	UPROPERTY(VisibleAnywhere, Category = FX)
+	UParticleSystem* HitEffect;
 	
 	UPROPERTY()
 	float speed;

@@ -168,7 +168,7 @@ void AGideon::MeteorCast()
 		MeteorVector = MeteorTarget->GetActorLocation();
 	}
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, 400.f));
 }
 
 void AGideon::MeteorFire()
@@ -176,7 +176,7 @@ void AGideon::MeteorFire()
 	UE_LOG(LogTemp, Warning, TEXT("fire in gideon"));
 	SetCanBeAttacked(true);
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params(NAME_None, false, this);
