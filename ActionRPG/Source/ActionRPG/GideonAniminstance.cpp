@@ -79,13 +79,13 @@ void UGideonAniminstance::AnimNotify_MeteorCast()
 
 void UGideonAniminstance::AnimNotify_MeteorFire()
 {
-	onFireMeteor.Broadcast();
+	OnFireMeteor.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("MeteorFire"));
 }
 
 void UGideonAniminstance::AnimNotify_TransformEnd()
 {
-	onTranformEnd.Broadcast();
+	OnTranformEnd.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("TransfromEnd"));
 }
 

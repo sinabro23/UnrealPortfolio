@@ -56,6 +56,6 @@ private:
 public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnMeteorCastDelegate OnMeteorCast;
-	FOnFireMeteorDelegate onFireMeteor;
-	FOnTransfromEndDelegate onTranformEnd;
+	FOnFireMeteorDelegate OnFireMeteor;
+	FOnTransfromEndDelegate OnTranformEnd;
 };

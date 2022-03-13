@@ -9,6 +9,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnBossDeadDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnTransfromEndDelegate);
 UCLASS()
 class ACTIONRPG_API AGideon : public ACharacter
 {
@@ -37,6 +38,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* LockOnParticle;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* FireAura;
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* FireSpin;
 
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent* HPBar;
@@ -69,6 +75,7 @@ public:
 
 	void MeteorCast();
 	void MeteorFire();
+	void TransformEffect();
 
 	void TransformPage2();
 
@@ -96,4 +103,5 @@ public:
 	FOnHPChangedDelegate OnHPChanged;
 	FOnAttackEndDelegate OnAttackEnd;
 	FOnBossDeadDelegate OnBossDead;
+	FOnTransfromEndDelegate OnTransformEndGideon;
 };

@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTTask_TransformGideon::ExecuteTask(UBehaviorTreeComponent&
 	Gideon->TransformPage2();
 	Gideon->SetCanBeAttacked(false);
 	IsAttacking = true;
-	Gideon->OnAttackEnd.AddLambda([this]() -> void {
+	Gideon->OnTransformEndGideon.AddLambda([this]() -> void {
 		IsAttacking = false;
 	});
 

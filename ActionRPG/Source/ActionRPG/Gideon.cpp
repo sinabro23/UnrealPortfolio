@@ -93,6 +93,23 @@ AGideon::AGideon()
 		MeteorShowerParticle = PS_METEOSHOWER.Object;
 	}
 
+	FireAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FIREAURA"));
+	FireAura->SetupAttachment(GetRootComponent());
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireAura(TEXT("ParticleSystem'/Game/InfinityBladeEffects/Effects/FX_Mobile/Fire/combat/P_Fire_AOE_Blast_Spin_mobile.P_Fire_AOE_Blast_Spin_mobile'"));
+	if (PS_FireAura.Succeeded())
+	{
+		FireAura->SetTemplate(PS_FireAura.Object);
+	}
+	FireAura->bAutoActivate = false;
+
+	FireSpin = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FIRESPIN"));
+	FireSpin->SetupAttachment(GetRootComponent());
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireSpin(TEXT("ParticleSystem'/Game/InfinityBladeEffects/Effects/FX_Mobile/Fire/combat/P_Moving_Spin_Fire_00.P_Moving_Spin_Fire_00'"));
+	if (PS_FireSpin.Succeeded())
+	{
+		FireSpin->SetTemplate(PS_FireSpin.Object);
+	}
+	FireSpin->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -138,7 +155,8 @@ void AGideon::PostInitializeComponents()
 		{
 			GAnimInstance->OnMontageEnded.AddDynamic(this, &AGideon::OnAttackMontageEnded);
 			GAnimInstance->OnMeteorCast.AddUObject(this, &AGideon::MeteorCast);
-			GAnimInstance->onFireMeteor.AddUObject(this, &AGideon::MeteorFire);
+			GAnimInstance->OnFireMeteor.AddUObject(this, &AGideon::MeteorFire);
+			GAnimInstance->OnTranformEnd.AddUObject(this, &AGideon::TransformEffect);
 		}
 	}
 
@@ -202,6 +220,14 @@ void AGideon::MeteorFire()
 			HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
 		}
 	}
+}
+
+void AGideon::TransformEffect()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TRANFORMEFFECT"));
+	FireAura->Activate();
+	FireSpin->Activate();
+	OnTransformEndGideon.Broadcast();
 }
 
 void AGideon::TransformPage2()
