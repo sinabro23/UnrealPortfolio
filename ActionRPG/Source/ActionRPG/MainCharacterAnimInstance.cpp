@@ -90,6 +90,12 @@ void UMainCharacterAnimInstance::RMBSkillMontagePlay()
 	}
 }
 
+void UMainCharacterAnimInstance::RSkillMontagePlay()
+{
+	Montage_Play(AttackMontage);
+	Montage_JumpToSection(TEXT("AbilityR"));
+}
+
 void UMainCharacterAnimInstance::AnimNotify_AttackCheck()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AttackCheck"));

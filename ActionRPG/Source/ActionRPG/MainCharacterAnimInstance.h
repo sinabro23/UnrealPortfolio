@@ -53,7 +53,7 @@ public:
 	void SetDeadAnim();
 
 	void RMBSkillMontagePlay();
-
+	void RSkillMontagePlay();
 	UFUNCTION()
 	void AnimNotify_AttackCheck();
 

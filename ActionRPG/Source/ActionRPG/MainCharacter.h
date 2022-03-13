@@ -147,6 +147,9 @@ public:
 	void EKeyReleased();
 	bool IsEkeyPressed = false;
 
+	void RKeyPressed();
+	void RKeyReleased();
+
 	void LockOn();
 
 	void Blessed();
@@ -203,8 +206,8 @@ private:
 	float AttackDamage = 40.f;
 	float RMBSkillDamage = 50.f;
 	float RMBSkillRange = 800.f;
-	float HPPotionHealth = 30.f;
-	float MPPotionHealth = 30.f;
+	float HPPotionHealth = 50.f;
+	float MPPotionHealth = 50.f;
 
 public:
 

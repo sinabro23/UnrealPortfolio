@@ -310,6 +310,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Pressed, this, &AMainCharacter::EKeyPressed);
 	PlayerInputComponent->BindAction(TEXT("EKey"), EInputEvent::IE_Released, this, &AMainCharacter::EKeyReleased);
 
+	PlayerInputComponent->BindAction(TEXT("RKey"), EInputEvent::IE_Pressed, this, &AMainCharacter::RKeyPressed);
+
 	PlayerInputComponent->BindAction(TEXT("TestKey1"), EInputEvent::IE_Pressed, this, &AMainCharacter::SaveGame);
 	PlayerInputComponent->BindAction(TEXT("TestKey2"), EInputEvent::IE_Pressed, this, &AMainCharacter::LoadGame);
 
@@ -478,6 +480,46 @@ void AMainCharacter::EKeyReleased()
 {
 	IsEkeyPressed = false;
 }
+
+void AMainCharacter::RKeyPressed()
+{
+	if (bIsAttacking || CurrentMP <= 5.f)
+		return;
+	UE_LOG(LogTemp, Warning, TEXT("RSKILL"));
+	MainAnim->RSkillMontagePlay();
+	SetMP(CurrentMP - 5.f);
+
+	FVector Center = GetActorLocation();
+	TArray<FOverlapResult> HitResults;
+	FCollisionQueryParams CollsionQueryParam(NAME_None, false, this);
+
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		HitResults,
+		Center,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(200.f),
+		CollsionQueryParam
+	);
+
+
+	if (bResult)
+	{
+		for (auto HitResult : HitResults)
+		{
+			if (HitResult.Actor.IsValid())
+			{
+
+				FDamageEvent DamageEvent;
+				HitResult.Actor->TakeDamage(35.f, DamageEvent, GetController(), this);
+			}
+		}
+	}
+
+
+	bIsAttacking = true;
+}
+
 
 
 
