@@ -13,6 +13,8 @@
 #include "GideonHealthbarWidget.h"
 #include "TimerManager.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "MainCharacter.h"
 
 // Sets default values
 AGideon::AGideon()
@@ -71,6 +73,25 @@ AGideon::AGideon()
 	{
 		LockOnParticle->SetTemplate(PS_GLOCKON.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_METEORCAST(TEXT("ParticleSystem'/Game/_Game/Gideon/FX/P_Gideon_Meteor_Portal.P_Gideon_Meteor_Portal'"));
+	if (PS_METEORCAST.Succeeded())
+	{
+		MeteorCastParitle = PS_METEORCAST.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_METEORFIRE(TEXT("ParticleSystem'/Game/_Game/Gideon/FX/P_Gideon_MeteorBigImpact_Undertow.P_Gideon_MeteorBigImpact_Undertow'"));
+	if (PS_METEORFIRE.Succeeded())
+	{
+		MeteorFireParticle = PS_METEORFIRE.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_METEOSHOWER(TEXT("ParticleSystem'/Game/_Game/Gideon/FX/P_Gideon_Meteor_Shower.P_Gideon_Meteor_Shower'"));
+	if (PS_METEOSHOWER.Succeeded())
+	{
+		MeteorShowerParticle = PS_METEOSHOWER.Object;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -82,6 +103,8 @@ void AGideon::BeginPlay()
 
 float AGideon::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if (false == bCanbeAttacked)
+		return 0.f;
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	SetHP(CurrentHP - DamageAmount);
@@ -113,6 +136,8 @@ void AGideon::PostInitializeComponents()
 		if (GAnimInstance)
 		{
 			GAnimInstance->OnMontageEnded.AddDynamic(this, &AGideon::OnAttackMontageEnded);
+			GAnimInstance->OnMeteorCast.AddUObject(this, &AGideon::MeteorCast);
+			GAnimInstance->onFireMeteor.AddUObject(this, &AGideon::MeteorFire);
 		}
 	}
 
@@ -131,6 +156,56 @@ bool AGideon::IsDead()
 	return bIsDead;
 }
 
+void AGideon::MeteorCast()
+{
+	UE_LOG(LogTemp, Warning, TEXT("cast in gideon"));
+	SetCanBeAttacked(false);
+	auto GideonController = Cast<AGideonAIController>(GetController());
+	if (GideonController)
+	{
+		MeteorTarget = Cast<AMainCharacter>(GideonController->GetBlackboardComponent()->GetValueAsObject(AGideonAIController::TargetKey));
+		MeteorVector = MeteorTarget->GetActorLocation();
+	}
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+}
+
+void AGideon::MeteorFire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("fire in gideon"));
+	SetCanBeAttacked(true);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params(NAME_None, false, this);
+
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		MeteorVector,
+		MeteorVector + FVector(0.0f, 0.0f, 100.f),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(300.f),
+		Params);
+
+	if (bResult)
+	{
+		if (HitResult.Actor.IsValid())
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+
+			FDamageEvent DamageEvent;
+			HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
+		}
+	}
+}
+
+void AGideon::SetCanBeAttacked(bool CanBe)
+{
+	bCanbeAttacked = CanBe;
+}
+
 void AGideon::FireFireBall()
 {
 	UGideonAniminstance* Anim = Cast<UGideonAniminstance>(GetMesh()->GetAnimInstance());
@@ -144,6 +219,14 @@ void AGideon::FireFireBall()
 		AFireBall* Fireball = GetWorld()->SpawnActor<AFireBall>(GetActorLocation(), FRotator::ZeroRotator);
 		Fireball->SetFireballRotation(GetActorRotation());
 		Fireball->SetOwner(this);
+	}
+}
+
+void AGideon::FireMeteor()
+{
+	if (GAnimInstance)
+	{
+		GAnimInstance->PlayMeteorMontage();
 	}
 }
 

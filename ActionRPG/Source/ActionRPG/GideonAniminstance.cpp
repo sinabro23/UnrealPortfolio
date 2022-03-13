@@ -39,6 +39,15 @@ void UGideonAniminstance::PlayAttackMontage()
 	}
 }
 
+void UGideonAniminstance::PlayMeteorMontage()
+{
+	if (AttackMontage)
+	{
+		Montage_Play(AttackMontage, 1.f);
+		Montage_JumpToSection(FName("Meteor"));
+	}
+}
+
 void UGideonAniminstance::JumpToSection(int32 MontageSection)
 {
 	FName Name = GetAttackMontageName(MontageSection);
@@ -50,5 +59,15 @@ FName UGideonAniminstance::GetAttackMontageName(int32 MontageSection)
 	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
 }
 
+void UGideonAniminstance::AnimNotify_MeteorCast()
+{
+	OnMeteorCast.Broadcast();
+	UE_LOG(LogTemp, Warning, TEXT("METEORCAST"));
+}
 
+void UGideonAniminstance::AnimNotify_MeteorFire()
+{
+	onFireMeteor.Broadcast();
+	UE_LOG(LogTemp, Warning, TEXT("MeteorFire"));
+}
 

@@ -6,7 +6,9 @@
 #include "Animation/AnimInstance.h"
 #include "GideonAniminstance.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate)
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnMeteorCastDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnFireMeteorDelegate);
 /**
  * 
  */
@@ -25,8 +27,15 @@ public:
 	void SetDeadAnim();
 
 	void PlayAttackMontage();
+	void PlayMeteorMontage();
 	void JumpToSection(int32 MontageSection);
 	FName GetAttackMontageName(int32 MontageSection);
+
+	UFUNCTION()
+	void AnimNotify_MeteorCast();
+	UFUNCTION()
+	void AnimNotify_MeteorFire();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed = 0.f;
@@ -39,4 +48,6 @@ private:
 
 public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
+	FOnMeteorCastDelegate OnMeteorCast;
+	FOnFireMeteorDelegate onFireMeteor;
 };

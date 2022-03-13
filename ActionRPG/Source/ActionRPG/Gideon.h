@@ -47,13 +47,29 @@ private:
 
 	bool bIsDead = false;
 
-
-
 	bool bLockOnVisible = false;
+
+	bool bCanbeAttacked = true;
+	TWeakObjectPtr<class AMainCharacter> MeteorTarget;
+	
+	UPROPERTY()
+	FVector MeteorVector;
+
+	UPROPERTY()
+	UParticleSystem* MeteorCastParitle;
+	UPROPERTY()
+	UParticleSystem* MeteorFireParticle;
+	UPROPERTY()
+	UParticleSystem* MeteorShowerParticle;
 public:
 	void FireFireBall();
+	void FireMeteor();
 	bool IsDead();
 
+	void MeteorCast();
+	void MeteorFire();
+
+	void SetCanBeAttacked(bool CanBe);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	float CurrentHP = 500.f;
