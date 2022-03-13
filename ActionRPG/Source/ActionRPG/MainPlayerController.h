@@ -30,7 +30,6 @@ public:
 
 public:
 
-
 	void ChangeInputMode(bool bGameMode = true);
 
 protected:

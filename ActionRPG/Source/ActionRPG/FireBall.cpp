@@ -18,7 +18,6 @@ AFireBall::AFireBall()
 	FireballSphere = CreateDefaultSubobject<USphereComponent>(TEXT("FIREBALLSPHERE"));
 	FireballSphere->InitSphereRadius(15.f);
 	FireballSphere->SetCollisionProfileName(TEXT("Item"));
-	FireballSphere->SetHiddenInGame(false);
 	RootComponent = FireballSphere;
 
 	FireballFX = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FIREBALLFX"));

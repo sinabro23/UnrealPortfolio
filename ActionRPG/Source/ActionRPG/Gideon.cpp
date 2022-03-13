@@ -41,7 +41,7 @@ AGideon::AGideon()
 
 	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
 	HPBar->SetupAttachment(GetMesh());
-	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 200.f));
+	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 300.f));
 	HPBar->SetWidgetSpace(EWidgetSpace::Screen);
 	HPBar->SetVisibility(false);
 
@@ -150,6 +150,8 @@ void AGideon::PostInitializeComponents()
 	{
 		HPWidget->BindHP(this);
 	}
+
+	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 240.f));
 }
 
 bool AGideon::IsDead()
@@ -199,6 +201,14 @@ void AGideon::MeteorFire()
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
 		}
+	}
+}
+
+void AGideon::TransformPage2()
+{
+	if (GAnimInstance)
+	{
+		GAnimInstance->PlayTransformMontage();
 	}
 }
 
