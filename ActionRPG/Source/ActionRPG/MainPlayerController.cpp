@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainGameplayWidget.h"
 #include "PotionShopWidget.h"
+#include "GameEndWidget.h"
 
 AMainPlayerController::AMainPlayerController()
 {
@@ -18,6 +19,12 @@ AMainPlayerController::AMainPlayerController()
 	if (UI_POTIONSHOP_C.Succeeded())
 	{
 		PotionShopWidgetClass = UI_POTIONSHOP_C.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UGameEndWidget> UI_GAMEEND_C(TEXT("WidgetBlueprint'/Game/_Game/UI/GameEndWidget.GameEndWidget_C'"));
+	if (UI_GAMEEND_C.Succeeded())
+	{
+		GameEndWidgetClass = UI_GAMEEND_C.Class;
 	}
 
 }
@@ -42,7 +49,7 @@ void AMainPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAction(TEXT("GamePause"), EInputEvent::IE_Pressed, this, &AMainPlayerController::OnGamePause);
-	InputComponent->BindAction(TEXT("TestPotionShop"), EInputEvent::IE_Pressed, this, &AMainPlayerController::OnPotionShop);
+	//InputComponent->BindAction(TEXT("TestPotionShop"), EInputEvent::IE_Pressed, this, &AMainPlayerController::OnGameEnd);
 }
 
 void AMainPlayerController::OnGamePause()
@@ -63,6 +70,18 @@ void AMainPlayerController::OnPotionShop()
 	if (PotionShopWidget)
 	{
 		PotionShopWidget->AddToViewport(4);
+
+		SetPause(true);
+		ChangeInputMode(false);
+	}
+}
+
+void AMainPlayerController::OnGameEnd()
+{
+	GameEndWidget = CreateWidget<UGameEndWidget>(this, GameEndWidgetClass);
+	if (GameEndWidget)
+	{
+		GameEndWidget->AddToViewport(3);
 
 		SetPause(true);
 		ChangeInputMode(false);

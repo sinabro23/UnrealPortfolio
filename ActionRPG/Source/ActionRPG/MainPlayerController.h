@@ -40,9 +40,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 	TSubclassOf<class UPotionShopWidget> PotionShopWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+	TSubclassOf<class UGameEndWidget> GameEndWidgetClass;
+
 public:
 	void OnGamePause();
 	void OnPotionShop();
+	void OnGameEnd();
 
 
 private:
@@ -52,6 +56,9 @@ private:
 
 	UPROPERTY()
 	UPotionShopWidget* PotionShopWidget;
+
+	UPROPERTY()
+	UGameEndWidget* GameEndWidget;
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;

@@ -110,6 +110,7 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	class USphereComponent* NearRangeSphere;
+
 	bool bIsNearSphereOverlapped = false;
 
 	FTimerHandle DeadTimerHandle;

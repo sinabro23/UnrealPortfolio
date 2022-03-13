@@ -8,6 +8,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnBossDeadDelegate);
 UCLASS()
 class ACTIONRPG_API AGideon : public ACharacter
 {
@@ -92,4 +93,5 @@ public:
 public:
 	FOnHPChangedDelegate OnHPChanged;
 	FOnAttackEndDelegate OnAttackEnd;
+	FOnBossDeadDelegate OnBossDead;
 };

@@ -15,6 +15,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MainCharacter.h"
+#include "MainPlayerController.h"
 
 // Sets default values
 AGideon::AGideon()
@@ -265,6 +266,11 @@ void AGideon::Death()
 
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
 		Destroy();
+		auto TargetController = Cast<AMainPlayerController>(MeteorTarget->GetController());
+		if(TargetController)
+		{
+			TargetController->OnGameEnd();
+		}
 	}), 5.f, false);
 }
 
