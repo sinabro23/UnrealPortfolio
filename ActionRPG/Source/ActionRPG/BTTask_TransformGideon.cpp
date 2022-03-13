@@ -4,7 +4,7 @@
 #include "BTTask_TransformGideon.h"
 #include "Gideon.h"	
 #include "GideonAIController.h"
-
+#include "BehaviorTree/BlackboardComponent.h"
 UBTTask_TransformGideon::UBTTask_TransformGideon()
 {
 	bNotifyTick = true;
@@ -18,6 +18,11 @@ EBTNodeResult::Type UBTTask_TransformGideon::ExecuteTask(UBehaviorTreeComponent&
 	AGideon* Gideon = Cast<AGideon>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Gideon)
 		return EBTNodeResult::Failed;
+
+	if (true == OwnerComp.GetBlackboardComponent()->GetValueAsBool(AGideonAIController::IsSecondPageIn))
+		return EBTNodeResult::Succeeded;
+
+	
 
 	Gideon->TransformPage2();
 	Gideon->SetCanBeAttacked(false);

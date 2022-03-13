@@ -95,7 +95,7 @@ AGideon::AGideon()
 
 	FireAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FIREAURA"));
 	FireAura->SetupAttachment(GetRootComponent());
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireAura(TEXT("ParticleSystem'/Game/InfinityBladeEffects/Effects/FX_Mobile/Fire/combat/P_Fire_AOE_Blast_Spin_mobile.P_Fire_AOE_Blast_Spin_mobile'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireAura(TEXT("ParticleSystem'/Game/_Game/Gideon/FX/P_Charged_AOE_Fire_00.P_Charged_AOE_Fire_00'"));
 	if (PS_FireAura.Succeeded())
 	{
 		FireAura->SetTemplate(PS_FireAura.Object);
@@ -104,7 +104,7 @@ AGideon::AGideon()
 
 	FireSpin = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FIRESPIN"));
 	FireSpin->SetupAttachment(GetRootComponent());
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireSpin(TEXT("ParticleSystem'/Game/InfinityBladeEffects/Effects/FX_Mobile/Fire/combat/P_Moving_Spin_Fire_00.P_Moving_Spin_Fire_00'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_FireSpin(TEXT("ParticleSystem'/Game/_Game/Gideon/FX/P_Moving_Spin_Fire_00.P_Moving_Spin_Fire_00'"));
 	if (PS_FireSpin.Succeeded())
 	{
 		FireSpin->SetTemplate(PS_FireSpin.Object);
@@ -160,7 +160,7 @@ void AGideon::PostInitializeComponents()
 		}
 	}
 
-	GideonAIController = Cast<AGideonAIController>(GetController());
+	MyAiController = Cast<AGideonAIController>(GetController());
 
 	HPBar->InitWidget();
 	auto HPWidget = Cast<UGideonHealthbarWidget>(HPBar->GetUserWidgetObject());
@@ -181,10 +181,11 @@ void AGideon::MeteorCast()
 {
 	UE_LOG(LogTemp, Warning, TEXT("cast in gideon"));
 	SetCanBeAttacked(false);
-	auto GideonController = Cast<AGideonAIController>(GetController());
-	if (GideonController)
+
+	auto GideonAIController = Cast<AGideonAIController>(GetController());
+	if (GideonAIController)
 	{
-		MeteorTarget = Cast<AMainCharacter>(GideonController->GetBlackboardComponent()->GetValueAsObject(AGideonAIController::TargetKey));
+		MeteorTarget = Cast<AMainCharacter>(GideonAIController->GetBlackboardComponent()->GetValueAsObject(AGideonAIController::TargetKey));
 		MeteorVector = MeteorTarget->GetActorLocation();
 	}
 
@@ -227,6 +228,9 @@ void AGideon::TransformEffect()
 	UE_LOG(LogTemp, Warning, TEXT("TRANFORMEFFECT"));
 	FireAura->Activate();
 	FireSpin->Activate();
+
+	MyAiController->GetBlackboardComponent()->SetValueAsBool(AGideonAIController::IsSecondPageIn, true);
+	SetCanBeAttacked(true);
 	OnTransformEndGideon.Broadcast();
 }
 
@@ -252,7 +256,7 @@ void AGideon::FireFireBall()
 		Anim->JumpToSection(AttackSectionIndex);
 		AttackSectionIndex = (AttackSectionIndex + 1) % 4;
 
-		FVector TargetLocation = GideonAIController->GetBlackboardComponent()->GetValueAsVector(AGideonAIController::TargetKey);
+		FVector TargetLocation = MyAiController->GetBlackboardComponent()->GetValueAsVector(AGideonAIController::TargetKey);
 		AFireBall* Fireball = GetWorld()->SpawnActor<AFireBall>(GetActorLocation(), FRotator::ZeroRotator);
 		Fireball->SetFireballRotation(GetActorRotation());
 		Fireball->SetOwner(this);
@@ -265,6 +269,30 @@ void AGideon::FireMeteor()
 	{
 		GAnimInstance->PlayMeteorMontage();
 	}
+}
+
+void AGideon::FireFireBall2()
+{
+	UGideonAniminstance* Anim = Cast<UGideonAniminstance>(GetMesh()->GetAnimInstance());
+	if (Anim)
+	{
+		Anim->PlayAttackMontage();
+		Anim->JumpToSection(AttackSectionIndex);
+		AttackSectionIndex = (AttackSectionIndex + 1) % 4;
+
+		FVector TargetLocation = MyAiController->GetBlackboardComponent()->GetValueAsVector(AGideonAIController::TargetKey);
+
+		for (int i = -1; i < 2; i++)
+		{
+			AFireBall* Fireball = GetWorld()->SpawnActor<AFireBall>(GetActorLocation(), FRotator::ZeroRotator);
+			Fireball->SetFireballRotation(GetActorRotation() + FRotator(0.0f, -15.f * i , 0.0f));
+			Fireball->SetOwner(this);
+		}
+	}
+}
+
+void AGideon::FireMeteor2()
+{
 }
 
 void AGideon::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -297,8 +325,9 @@ void AGideon::Death()
 	HPBar->SetHiddenInGame(true);
 	GAnimInstance->SetDeadAnim();
 	SetCanBeDamaged(false);
-	GideonAIController->StopAI();
+	MyAiController->StopAI();
 	LockOnParticle->SetVisibility(false);
+	FireSpin->Deactivate();
 
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
 		Destroy();

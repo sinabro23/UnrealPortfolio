@@ -25,6 +25,8 @@ public:
 	static const FName TargetKey;
 	static const FName RandomPosKey;
 	static const FName IsPageChangedKey;
+	static const FName IsSecondPageIn;
+
 protected:
 
 	UPROPERTY()

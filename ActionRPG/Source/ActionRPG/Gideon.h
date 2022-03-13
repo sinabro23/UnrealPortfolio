@@ -34,7 +34,8 @@ public:
 
 public:
 	class UGideonAniminstance* GAnimInstance;
-	class AGideonAIController* GideonAIController;
+
+	class AGideonAIController* MyAiController;
 
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* LockOnParticle;
@@ -48,6 +49,8 @@ public:
 	class UWidgetComponent* HPBar;
 
 	FTimerHandle DeadTimerHandle;
+
+
 private:
 	float MovementSpeed = 500.f;
 	int32 AttackSectionIndex = 0;
@@ -71,6 +74,10 @@ private:
 public:
 	void FireFireBall();
 	void FireMeteor();
+	
+	void FireFireBall2();
+	void FireMeteor2();
+	
 	bool IsDead();
 
 	void MeteorCast();

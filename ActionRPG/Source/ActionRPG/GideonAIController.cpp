@@ -14,6 +14,7 @@ const FName AGideonAIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName AGideonAIController::TargetKey(TEXT("Target"));
 const FName AGideonAIController::RandomPosKey(TEXT("RandomPos"));
 const FName AGideonAIController::IsPageChangedKey(TEXT("IsPageChanged"));
+const FName AGideonAIController::IsSecondPageIn(TEXT("IsSecondPageIn"));
 
 AGideonAIController::AGideonAIController()
 {
