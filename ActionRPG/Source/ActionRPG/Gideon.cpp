@@ -196,31 +196,68 @@ void AGideon::MeteorFire()
 {
 	UE_LOG(LogTemp, Warning, TEXT("fire in gideon"));
 	SetCanBeAttacked(true);
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
-	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
 
-	FHitResult HitResult;
-	FCollisionQueryParams Params(NAME_None, false, this);
-
-	bool bResult = GetWorld()->SweepSingleByChannel(
-		HitResult,
-		MeteorVector,
-		MeteorVector + FVector(0.0f, 0.0f, 100.f),
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2,
-		FCollisionShape::MakeSphere(300.f),
-		Params);
-
-	if (bResult)
+	if (true == MyAiController->GetBlackboardComponent()->GetValueAsBool(AGideonAIController::IsSecondPageIn))
 	{
-		if (HitResult.Actor.IsValid())
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(300.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(-300.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 300.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, -300.0f, -80.f));
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
 
-			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
+		FHitResult HitResult;
+		FCollisionQueryParams Params(NAME_None, false, this);
+
+		bool bResult = GetWorld()->SweepSingleByChannel(
+			HitResult,
+			MeteorVector,
+			MeteorVector + FVector(0.0f, 0.0f, 100.f),
+			FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel2,
+			FCollisionShape::MakeSphere(1000.f),
+			Params);
+
+		if (bResult)
+		{
+			if (HitResult.Actor.IsValid())
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+
+				FDamageEvent DamageEvent;
+				HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
+			}
 		}
 	}
+	else
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+
+		FHitResult HitResult;
+		FCollisionQueryParams Params(NAME_None, false, this);
+
+		bool bResult = GetWorld()->SweepSingleByChannel(
+			HitResult,
+			MeteorVector,
+			MeteorVector + FVector(0.0f, 0.0f, 100.f),
+			FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel2,
+			FCollisionShape::MakeSphere(300.f),
+			Params);
+
+		if (bResult)
+		{
+			if (HitResult.Actor.IsValid())
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+
+				FDamageEvent DamageEvent;
+				HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
+			}
+		}
+	}
+
 }
 
 void AGideon::TransformEffect()
@@ -289,10 +326,6 @@ void AGideon::FireFireBall2()
 			Fireball->SetOwner(this);
 		}
 	}
-}
-
-void AGideon::FireMeteor2()
-{
 }
 
 void AGideon::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

@@ -76,7 +76,6 @@ public:
 	void FireMeteor();
 	
 	void FireFireBall2();
-	void FireMeteor2();
 	
 	bool IsDead();
 
