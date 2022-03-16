@@ -117,6 +117,24 @@ AMainCharacter::AMainCharacter()
 	}
 	BuffParticle->bAutoActivate = false;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Die(TEXT("SoundCue'/Game/_Game/Character/Sound/Kwang_Death.Kwang_Death'"));
+	if (SC_ATTACK.Succeeded())
+	{
+		DieSound = SC_Die.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_RMB(TEXT("SoundCue'/Game/_Game/Character/Sound/Kwang_Effort_Ability_RMB.Kwang_Effort_Ability_RMB'"));
+	if (SC_RMB.Succeeded())
+	{
+		RMBSound = SC_RMB.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Q(TEXT("SoundCue'/Game/_Game/Character/Sound/Kwang_Effort_Ability_Q.Kwang_Effort_Ability_Q'"));
+	if (SC_Q.Succeeded())
+	{
+		QSound = SC_Q.Object;
+	}
+
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus NewStatus)
@@ -673,6 +691,7 @@ void AMainCharacter::RMBSkill()
 	);
 
 	RMBSkillParticle->Activate(true);
+	UGameplayStatics::PlaySound2D(GetWorld(), RMBSound);
 
 	if (bResult)
 	{
