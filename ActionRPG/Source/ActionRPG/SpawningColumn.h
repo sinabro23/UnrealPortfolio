@@ -36,6 +36,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* Trigger;
 
+
 public:
 	void MonsterCheck();
 

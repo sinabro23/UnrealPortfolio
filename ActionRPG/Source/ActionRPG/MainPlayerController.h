@@ -53,7 +53,8 @@ public:
 	void OnPotionShop();
 	void OnGameEnd();
 	void SetBossHPWidgetVisibility(bool bVisible);
-
+	void StopOrdinaryBGM();
+	void PlayBossRoomBGM();
 
 private:
 
@@ -69,5 +70,8 @@ private:
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;
 
-	//class USoundCue* BGMSound;
+	class USoundCue* BGMSound;
+	class USoundCue* BossBGMSound;
+
+	class UAudioComponent* AudioComp = nullptr;
 };

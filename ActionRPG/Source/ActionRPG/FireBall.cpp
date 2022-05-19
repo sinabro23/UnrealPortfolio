@@ -43,7 +43,7 @@ void AFireBall::BeginPlay()
 
 	OriginVector = GetActorLocation();
 	CurrentLocation = GetActorLocation(); // To save where ever the actor is in the viewport
-	speed = 1000.0f;
+	speed = 1500.f;
 
 }
 
@@ -89,8 +89,11 @@ void AFireBall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	auto Character = Cast<AMainCharacter>(OtherActor);
 	if (Character)
 	{
-		Character->SetHP(Character->GetCurrentHP() - 15.f);
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, Character->GetActorLocation());
+		if (!Character->GetIsImmortal())
+		{
+			Character->SetHP(Character->GetCurrentHP() - 15.f);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, Character->GetActorLocation());
+		}
 	}
 
 	Destroy();

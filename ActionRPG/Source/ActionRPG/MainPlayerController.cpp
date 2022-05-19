@@ -8,6 +8,7 @@
 #include "GameEndWidget.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 AMainPlayerController::AMainPlayerController()
 {
@@ -29,11 +30,20 @@ AMainPlayerController::AMainPlayerController()
 		GameEndWidgetClass = UI_GAMEEND_C.Class;
 	}
 
-	//static ConstructorHelpers::FObjectFinder<USoundCue> SC_BGM(TEXT("SoundCue'/Game/_Game/Assets/Sounds/BGM/battle-of-the-dragons-8037_Cue.battle-of-the-dragons-8037_Cue'"));
-	//if (SC_BGM.Succeeded())
-	//{
-	//	BGMSound = SC_BGM.Object;
-	//}
+
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_BGM(TEXT("SoundCue'/Game/_Game/Assets/Sound/BGM/cinematic-dramatic-11120_Cue.cinematic-dramatic-11120_Cue'"));
+	if (SC_BGM.Succeeded())
+	{
+		BGMSound = SC_BGM.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_BossBGM(TEXT("SoundCue'/Game/_Game/Assets/Sound/BGM/epic-dramatic-action-trailer-99525_Cue.epic-dramatic-action-trailer-99525_Cue'"));
+	if (SC_BossBGM.Succeeded())
+	{
+		BossBGMSound = SC_BossBGM.Object;
+	}
+
 }
 
 void AMainPlayerController::BeginPlay()
@@ -62,10 +72,11 @@ void AMainPlayerController::BeginPlay()
 		BossHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
 	}
 
-	//if (BGMSound)
-	//{
-	//	UGameplayStatics::PlaySound2D(GetWorld(), BGMSound);
-	//}
+
+	if (BGMSound)
+	{
+		AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(), BGMSound);
+	}
 	
 }
 
@@ -130,6 +141,17 @@ void AMainPlayerController::SetBossHPWidgetVisibility(bool bVisible)
 			BossHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
+}
+
+void AMainPlayerController::StopOrdinaryBGM()
+{
+	AudioComp->Stop();
+}
+
+void AMainPlayerController::PlayBossRoomBGM()
+{
+	AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(), BossBGMSound);
+	AudioComp->Play();
 }
 
 void AMainPlayerController::ChangeInputMode(bool bGameMode)

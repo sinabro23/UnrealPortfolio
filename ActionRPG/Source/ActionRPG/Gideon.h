@@ -91,6 +91,10 @@ private:
 
 	FVector MeteorSpawnVector = FVector();
 
+	class USoundCue* FireballSound;
+	USoundCue* MeteorSound;
+
+
 public:
 	void FireFireBall();
 	void FireMeteor();

@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MainCharacter.h"
 #include "MainPlayerController.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AGideon::AGideon()
@@ -38,19 +39,6 @@ AGideon::AGideon()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
-
-	//HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
-	//HPBar->SetupAttachment(GetMesh());
-	//HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 300.f));
-	//HPBar->SetWidgetSpace(EWidgetSpace::Screen);
-	//HPBar->SetVisibility(false);
-
-	//static ConstructorHelpers::FClassFinder<UUserWidget> UW_GHPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/MainHUD/GideonHealthbarWidget.GideonHealthbarWidget_C'"));
-	//if (UW_GHPBAR.Succeeded())
-	//{
-	//	HPBar->SetWidgetClass(UW_GHPBAR.Class);
-	//	HPBar->SetDrawSize(FVector2D(500.f, 40.f));
-	//}
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> GideonAnim(TEXT("AnimBlueprint'/Game/_Game/Gideon/Animation/GideonAnim.GideonAnim_C'"));
 	if (GideonAnim.Succeeded())
@@ -109,7 +97,22 @@ AGideon::AGideon()
 	{
 		FireSpin->SetTemplate(PS_FireSpin.Object);
 	}
+
 	FireSpin->bAutoActivate = false;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Fireball(TEXT("SoundCue'/Game/_Game/Assets/Sound/Fireball.Fireball'"));
+	if (SC_Fireball.Succeeded())
+	{
+		FireballSound = SC_Fireball.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Meteor(TEXT("SoundCue'/Game/_Game/Assets/Sound/Meteor_Impact_Sound_Effect_Cue.Meteor_Impact_Sound_Effect_Cue'"));
+	if (SC_Meteor.Succeeded())
+	{
+		MeteorSound = SC_Meteor.Object;
+	}
+
+
 }
 
 // Called when the game starts or when spawned
@@ -194,6 +197,9 @@ void AGideon::MeteorFire()
 	UE_LOG(LogTemp, Warning, TEXT("fire in gideon"));
 	SetCanBeAttacked(true);
 
+	if (bIsDead)
+		return;
+
 	if (true == MyAiController->GetBlackboardComponent()->GetValueAsBool(AGideonAIController::IsSecondPageIn))
 	{
 		MeteorVector = MainCharacter->GetActorLocation();
@@ -244,6 +250,7 @@ void AGideon::SendMeteorRepeat()
 {
 	if (MeteorRepeatCount < 2)
 	{
+		UGameplayStatics::PlaySound2D(GetWorld(), MeteorSound);
 		MeteorRepeatCount++;
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, 400.f));
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
@@ -262,7 +269,7 @@ void AGideon::SendMeteorRepeat()
 			MeteorSpawnVector + FVector(0.0f, 0.0f, 100.f),
 			FQuat::Identity,
 			ECollisionChannel::ECC_GameTraceChannel2,
-			FCollisionShape::MakeSphere(300.f),
+			FCollisionShape::MakeSphere(500.f),
 			Params);
 
 		if (bResult)
@@ -276,7 +283,8 @@ void AGideon::SendMeteorRepeat()
 			}
 		}
 
-		GetWorldTimerManager().SetTimer(SecondPageMeteorTimer, this, &AGideon::RepeatMeteor, MeteorTime);
+		MeteorSpawnVector = MainCharacter->GetActorLocation();
+		GetWorldTimerManager().SetTimer(SecondPageMeteorTimer, this, &AGideon::SendMeteorRepeat, MeteorTime);
 	}
 	else
 	{
@@ -288,6 +296,7 @@ void AGideon::SendMeteorOneShot()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, 400.f));
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+	UGameplayStatics::PlaySound2D(GetWorld(), MeteorSound);
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params(NAME_None, false, this);
@@ -298,7 +307,7 @@ void AGideon::SendMeteorOneShot()
 		MeteorVector + FVector(0.0f, 0.0f, 100.f),
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel2,
-		FCollisionShape::MakeSphere(300.f),
+		FCollisionShape::MakeSphere(500.f),
 		Params);
 
 	if (bResult)
@@ -324,6 +333,8 @@ void AGideon::FireFireBall()
 		AFireBall* Fireball = GetWorld()->SpawnActor<AFireBall>(GetActorLocation(), FRotator::ZeroRotator);
 		Fireball->SetFireballRotation(GetActorRotation());
 		Fireball->SetOwner(this);
+
+		UGameplayStatics::PlaySound2D(GetWorld(), FireballSound);
 	}
 }
 
@@ -345,9 +356,11 @@ void AGideon::FireFireBall2()
 		AttackSectionIndex = (AttackSectionIndex + 1) % 4;
 
 		FVector TargetLocation = MyAiController->GetBlackboardComponent()->GetValueAsVector(AGideonAIController::TargetKey);
+		UGameplayStatics::PlaySound2D(GetWorld(), FireballSound);
 
 		for (int i = -1; i < 2; i++)
 		{
+			
 			AFireBall* Fireball = GetWorld()->SpawnActor<AFireBall>(GetActorLocation(), FRotator::ZeroRotator);
 			Fireball->SetFireballRotation(GetActorRotation() + FRotator(0.0f, -15.f * i , 0.0f));
 			Fireball->SetOwner(this);
@@ -380,6 +393,7 @@ float AGideon::GetHPRatio()
 void AGideon::Death()
 {
 	bIsDead = true;
+
 
 	AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(MainCharacter->GetController());
 	if (MainPlayerController)

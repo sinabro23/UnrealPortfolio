@@ -141,8 +141,21 @@ AMainCharacter::AMainCharacter()
 		RSkillSound = SC_R.Object;
 	}
 
-	
+	HealingParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HealingParticle"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS_Healing(TEXT("ParticleSystem'/Game/RPGEffects/Particles/P_Priest_Heal_Over_Time_3D.P_Priest_Heal_Over_Time_3D'"));
+	if (PS_Healing.Succeeded())
+	{
+		HealingParticle->SetTemplate(PS_Healing.Object);
+	}
 
+	HealingParticle->SetupAttachment(GetRootComponent());
+	HealingParticle->SetActive(true);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_Item(TEXT("SoundCue'/Game/Interface_And_Item_Sounds/Cues/Click_06_Cue.Click_06_Cue'"));
+	if (SC_Item.Succeeded())
+	{
+		TakeItemSound = SC_Item.Object;
+	}
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus NewStatus)
@@ -194,6 +207,8 @@ void AMainCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	LockOnLookAtRotation = FRotator(GetActorRotation());
+	HealingParticle->SetActive(true);
+	HealingParticle->SetHiddenInGame(true);
 }
 
 void AMainCharacter::PostInitializeComponents()
@@ -221,7 +236,7 @@ float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (!CharacterCanBeDamaged)
+	if (IsImmortal || !CharacterCanBeDamaged)
 		return 0;
 
 	SetHP(CurrentHP - DamageAmount);
@@ -337,6 +352,7 @@ void AMainCharacter::Tick(float DeltaTime)
 			SetMP(CurrentMP + DeltaTime * 20.f);
 		}
 	}
+
 }
 
 // Called to bind functionality to input
@@ -360,6 +376,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction(TEXT("HPPotion"), EInputEvent::IE_Pressed, this, &AMainCharacter::HPPotion);
 	PlayerInputComponent->BindAction(TEXT("MPPotion"), EInputEvent::IE_Pressed, this, &AMainCharacter::MPPotion);
+	PlayerInputComponent->BindAction(TEXT("F12Key"), EInputEvent::IE_Pressed, this, &AMainCharacter::PKeyPressed);
 
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &AMainCharacter::CapslockKeyDown);
 	//PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &AMainCharacter::CapslockKeyUp);
@@ -770,6 +787,8 @@ void AMainCharacter::HPPotion()
 	}
 	else
 	{
+		HealingParticle->SetActive(true, true);
+		HealingParticle->SetHiddenInGame(false);
 		HPPotionCount--;
 		IsDrinkingHPPotion = true;
 		GetWorldTimerManager().SetTimer(HPPotionTimer, this, &AMainCharacter::ResetHPPotion, 1.5f);
@@ -787,6 +806,8 @@ void AMainCharacter::MPPotion()
 	}
 	else
 	{
+		HealingParticle->SetActive(true, true);
+		HealingParticle->SetHiddenInGame(false);
 		IsDrinkingMPPotion = true;
 		MPPotionCount--;
 		GetWorldTimerManager().SetTimer(MPPotionTimer, this, &AMainCharacter::ResetMPPotion, 1.5f);
@@ -796,11 +817,13 @@ void AMainCharacter::MPPotion()
 void AMainCharacter::GetHPPotion()
 {
 	HPPotionCount += 1;
+	UGameplayStatics::PlaySound2D(GetWorld(), TakeItemSound);
 }
 
 void AMainCharacter::GetMPPotion()
 {
 	MPPotionCount += 1;
+	UGameplayStatics::PlaySound2D(GetWorld(), TakeItemSound);
 }
 
 void AMainCharacter::SetCanBuy(bool Input)
@@ -896,6 +919,7 @@ void AMainCharacter::SetMP(float NewMP)
 void AMainCharacter::GetCoins(int32 NewCoin)
 {
 	Coins += NewCoin;
+	UGameplayStatics::PlaySound2D(GetWorld(), TakeItemSound);
 }
 
 int32 AMainCharacter::GetCoinCounts()
@@ -916,11 +940,28 @@ float AMainCharacter::GetCurrentHP()
 void AMainCharacter::ResetHPPotion()
 {
 	IsDrinkingHPPotion = false;
+	HealingParticle->SetHiddenInGame(true);
+
 }
 
 void AMainCharacter::ResetMPPotion()
 {
 	IsDrinkingMPPotion = false;
+	HealingParticle->SetHiddenInGame(true);
+}
+
+void AMainCharacter::PKeyPressed()
+{
+	if (IsImmortal)
+	{
+		IsImmortal = false;
+		CharacterCanBeDamaged = false;
+	}
+	else
+	{
+		IsImmortal = true;
+		CharacterCanBeDamaged = true;
+	}
 }
 
 void AMainCharacter::SaveGame()

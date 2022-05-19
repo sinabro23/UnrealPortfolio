@@ -5,6 +5,8 @@
 #include "Components/BoxComponent.h"
 #include "MainCharacter.h"
 #include "MainPlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 ABossRoomGate::ABossRoomGate()
@@ -25,6 +27,12 @@ ABossRoomGate::ABossRoomGate()
 	Box->SetBoxExtent(FVector(80.f, 80.f, 30.f));
 	Box->SetupAttachment(GetRootComponent());
 	Box->SetCollisionProfileName(TEXT("Item"));
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_ROLLING(TEXT("SoundCue'/Game/_Game/Assets/Sound/RockRolling__online-audio-converter_com__Cue.RockRolling__online-audio-converter_com__Cue'"));
+	if (SC_ROLLING.Succeeded())
+	{
+		RollingSound = SC_ROLLING.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -62,9 +70,12 @@ void ABossRoomGate::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		if (MainPlayerController)
 		{
 			MainPlayerController->SetBossHPWidgetVisibility(true);
+			MainPlayerController->StopOrdinaryBGM();
+			MainPlayerController->PlayBossRoomBGM();
 		}
 		IsInBoosRoom = true;
 
+		UGameplayStatics::PlaySound2D(GetWorld(), RollingSound);
 		GetWorldTimerManager().SetTimer(GateTimer, this, &ABossRoomGate::GateClosed, GateEndTime);
 	}
 }

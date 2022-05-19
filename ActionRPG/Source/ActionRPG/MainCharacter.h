@@ -83,6 +83,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* BuffParticle;
 
+	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* HealingParticle;
+
 
 private:
 	int32 AttackSectionIndex = 0;
@@ -224,7 +227,10 @@ private:
 
 	FTimerHandle HPPotionTimer;
 	FTimerHandle MPPotionTimer;
+	
+	bool IsImmortal = false;
 
+	USoundCue* TakeItemSound;
 public:
 
 	void SetHP(float NewHP);
@@ -238,6 +244,7 @@ public:
 	void ResetHPPotion();
 	void ResetMPPotion();
 
+	void PKeyPressed();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -253,6 +260,7 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetHPRatio() { return CurrentHP / MaxHP; }
+	FORCEINLINE bool GetIsImmortal() { return IsImmortal; }
 
 
 };

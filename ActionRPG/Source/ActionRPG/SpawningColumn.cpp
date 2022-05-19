@@ -12,6 +12,7 @@
 #include "NavigationSystem.h"
 #include "Components/BoxComponent.h"
 
+
 // Sets default values
 ASpawningColumn::ASpawningColumn()
 {
@@ -27,6 +28,8 @@ ASpawningColumn::ASpawningColumn()
 	{
 		Mesh->SetStaticMesh(SM_COLUMN.Object);
 	}
+
+
 }
 
 // Called when the game starts or when spawned
