@@ -39,18 +39,18 @@ AGideon::AGideon()
 
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 
-	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
-	HPBar->SetupAttachment(GetMesh());
-	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 300.f));
-	HPBar->SetWidgetSpace(EWidgetSpace::Screen);
-	HPBar->SetVisibility(false);
+	//HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
+	//HPBar->SetupAttachment(GetMesh());
+	//HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 300.f));
+	//HPBar->SetWidgetSpace(EWidgetSpace::Screen);
+	//HPBar->SetVisibility(false);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UW_GHPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/MainHUD/GideonHealthbarWidget.GideonHealthbarWidget_C'"));
-	if (UW_GHPBAR.Succeeded())
-	{
-		HPBar->SetWidgetClass(UW_GHPBAR.Class);
-		HPBar->SetDrawSize(FVector2D(500.f, 40.f));
-	}
+	//static ConstructorHelpers::FClassFinder<UUserWidget> UW_GHPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/MainHUD/GideonHealthbarWidget.GideonHealthbarWidget_C'"));
+	//if (UW_GHPBAR.Succeeded())
+	//{
+	//	HPBar->SetWidgetClass(UW_GHPBAR.Class);
+	//	HPBar->SetDrawSize(FVector2D(500.f, 40.f));
+	//}
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> GideonAnim(TEXT("AnimBlueprint'/Game/_Game/Gideon/Animation/GideonAnim.GideonAnim_C'"));
 	if (GideonAnim.Succeeded())
@@ -117,6 +117,12 @@ void AGideon::BeginPlay()
 {
 	Super::BeginPlay();
 	SetHP(MaxHP);
+	
+	MainCharacter = Cast<AMainCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (MainCharacter)
+	{
+		MainCharacter->SetBoss(this);
+	}
 }
 
 float AGideon::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -161,15 +167,6 @@ void AGideon::PostInitializeComponents()
 	}
 
 	MyAiController = Cast<AGideonAIController>(GetController());
-
-	HPBar->InitWidget();
-	auto HPWidget = Cast<UGideonHealthbarWidget>(HPBar->GetUserWidgetObject());
-	if (HPWidget)
-	{
-		HPWidget->BindHP(this);
-	}
-
-	HPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 240.f));
 }
 
 bool AGideon::IsDead()
@@ -189,7 +186,7 @@ void AGideon::MeteorCast()
 		MeteorVector = MeteorTarget->GetActorLocation();
 	}
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, 400.f));
+	
 }
 
 void AGideon::MeteorFire()
@@ -199,63 +196,16 @@ void AGideon::MeteorFire()
 
 	if (true == MyAiController->GetBlackboardComponent()->GetValueAsBool(AGideonAIController::IsSecondPageIn))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(300.0f, 0.0f, -80.f));
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(-300.0f, 0.0f, -80.f));
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 300.0f, -80.f));
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, -300.0f, -80.f));
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+		MeteorVector = MainCharacter->GetActorLocation();
+		GetWorldTimerManager().SetTimer(MeteorOneShotTimer, this, &AGideon::SendMeteorOneShot, MeteorOneShotTime);
 
-		FHitResult HitResult;
-		FCollisionQueryParams Params(NAME_None, false, this);
-
-		bool bResult = GetWorld()->SweepSingleByChannel(
-			HitResult,
-			MeteorVector,
-			MeteorVector + FVector(0.0f, 0.0f, 100.f),
-			FQuat::Identity,
-			ECollisionChannel::ECC_GameTraceChannel2,
-			FCollisionShape::MakeSphere(1000.f),
-			Params);
-
-		if (bResult)
-		{
-			if (HitResult.Actor.IsValid())
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
-
-				FDamageEvent DamageEvent;
-				HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
-			}
-		}
+		GetWorldTimerManager().SetTimer(SecondPageMeteorTimer, this, &AGideon::RepeatMeteor, MeteorTime);
 	}
 	else
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorShowerParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
 
-		FHitResult HitResult;
-		FCollisionQueryParams Params(NAME_None, false, this);
-
-		bool bResult = GetWorld()->SweepSingleByChannel(
-			HitResult,
-			MeteorVector,
-			MeteorVector + FVector(0.0f, 0.0f, 100.f),
-			FQuat::Identity,
-			ECollisionChannel::ECC_GameTraceChannel2,
-			FCollisionShape::MakeSphere(300.f),
-			Params);
-
-		if (bResult)
-		{
-			if (HitResult.Actor.IsValid())
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
-
-				FDamageEvent DamageEvent;
-				HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
-			}
-		}
+		MeteorVector = MainCharacter->GetActorLocation();
+		GetWorldTimerManager().SetTimer(MeteorOneShotTimer, this, &AGideon::SendMeteorOneShot, MeteorOneShotTime);
 	}
 
 }
@@ -282,6 +232,83 @@ void AGideon::TransformPage2()
 void AGideon::SetCanBeAttacked(bool CanBe)
 {
 	bCanbeAttacked = CanBe;
+}
+
+void AGideon::RepeatMeteor()
+{
+	MeteorSpawnVector = MainCharacter->GetActorLocation();
+	GetWorldTimerManager().SetTimer(GetMeteorVectorTimer, this, &AGideon::SendMeteorRepeat, GetMeteorVectorRepeatTime);
+}
+
+void AGideon::SendMeteorRepeat()
+{
+	if (MeteorRepeatCount < 2)
+	{
+		MeteorRepeatCount++;
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, 400.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorSpawnVector + FVector(0.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorSpawnVector + FVector(300.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorSpawnVector + FVector(-300.0f, 0.0f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorSpawnVector + FVector(0.f, 300.f, -80.f));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorSpawnVector + FVector(-0.f, 300.f, -80.f));
+
+		FHitResult HitResult;
+		FCollisionQueryParams Params(NAME_None, false, this);
+
+		bool bResult = GetWorld()->SweepSingleByChannel(
+			HitResult,
+			MeteorSpawnVector,
+			MeteorSpawnVector + FVector(0.0f, 0.0f, 100.f),
+			FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel2,
+			FCollisionShape::MakeSphere(300.f),
+			Params);
+
+		if (bResult)
+		{
+			if (HitResult.Actor.IsValid())
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+
+				FDamageEvent DamageEvent;
+				HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
+			}
+		}
+
+		GetWorldTimerManager().SetTimer(SecondPageMeteorTimer, this, &AGideon::RepeatMeteor, MeteorTime);
+	}
+	else
+	{
+		MeteorRepeatCount = 0;
+	}
+}
+
+void AGideon::SendMeteorOneShot()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorCastParitle, MeteorVector + FVector(0.0f, 0.0f, 400.f));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MeteorFireParticle, MeteorVector + FVector(0.0f, 0.0f, -80.f));
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params(NAME_None, false, this);
+
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		MeteorVector,
+		MeteorVector + FVector(0.0f, 0.0f, 100.f),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(300.f),
+		Params);
+
+	if (bResult)
+	{
+		if (HitResult.Actor.IsValid())
+		{
+			FDamageEvent DamageEvent;
+			HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
+		}
+	}
 }
 
 void AGideon::FireFireBall()
@@ -353,9 +380,16 @@ float AGideon::GetHPRatio()
 void AGideon::Death()
 {
 	bIsDead = true;
+
+	AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(MainCharacter->GetController());
+	if (MainPlayerController)
+	{
+		MainPlayerController->SetBossHPWidgetVisibility(false);
+	}
+
 	SetActorEnableCollision(false);
 	GetMovementBase()->SetHiddenInGame(false);
-	HPBar->SetHiddenInGame(true);
+	//HPBar->SetHiddenInGame(true);
 	GAnimInstance->SetDeadAnim();
 	SetCanBeDamaged(false);
 	MyAiController->StopAI();
@@ -374,7 +408,7 @@ void AGideon::Death()
 
 void AGideon::SetHPBarVisiblity(bool Visibility)
 {
-	HPBar->SetVisibility(Visibility);
+	//HPBar->SetVisibility(Visibility);
 }
 
 void AGideon::LockOn()

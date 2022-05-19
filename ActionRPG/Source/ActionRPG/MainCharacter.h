@@ -66,11 +66,13 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
 	class USoundCue* AttackSound;
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
-	class USoundCue* DieSound;
+	USoundCue* DieSound;
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
-	class USoundCue* RMBSound;
+	USoundCue* RMBSound;
 	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
-	class USoundCue* QSound;
+	USoundCue* QSound;
+	UPROPERTY(VisibleAnywhere, Category = Sound, Meta = (AllowPrivateAccess = true))
+	USoundCue* RSkillSound;
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* RMBSkillParticle;
@@ -126,6 +128,8 @@ private:
 	bool bCanBuy = false;
 
 	bool bIsInBossRoom = false;
+
+	class AGideon* Boss = nullptr;
 public:
 	bool IsCharacterInBossRoom();
 	void SetCharacterInBossRoom(bool IsIn);
@@ -188,11 +192,11 @@ public:
 private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
-	float CurrentHP = 50.f;
+	float CurrentHP = 100.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxHP = 100.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
-	float CurrentMP = 60.f;
+	float CurrentMP = 100.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
 	float MaxMP = 100.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Stat", Meta = (AllowPrivateAccess = true))
@@ -215,6 +219,12 @@ private:
 	float HPPotionHealth = 50.f;
 	float MPPotionHealth = 50.f;
 
+	bool IsDrinkingHPPotion = false;
+	bool IsDrinkingMPPotion = false;
+
+	FTimerHandle HPPotionTimer;
+	FTimerHandle MPPotionTimer;
+
 public:
 
 	void SetHP(float NewHP);
@@ -225,12 +235,20 @@ public:
 
 	float GetCurrentHP();
 
+	void ResetHPPotion();
+	void ResetMPPotion();
+
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void SaveGame();
 	UFUNCTION(BlueprintCallable)
 	void LoadGame();
+
+	void SetBoss(AGideon* Gideon);
+
+	UFUNCTION(BlueprintCallable)
+	AGideon* GetBoss();
 
 public:
 	UFUNCTION(BlueprintCallable)

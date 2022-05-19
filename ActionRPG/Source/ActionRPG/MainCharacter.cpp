@@ -123,7 +123,7 @@ AMainCharacter::AMainCharacter()
 		DieSound = SC_Die.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> SC_RMB(TEXT("SoundCue'/Game/_Game/Character/Sound/Kwang_Effort_Ability_RMB.Kwang_Effort_Ability_RMB'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_RMB(TEXT("SoundCue'/Game/_Game/Assets/Sound/thunder-loop-1_Cue.thunder-loop-1_Cue'"));
 	if (SC_RMB.Succeeded())
 	{
 		RMBSound = SC_RMB.Object;
@@ -134,6 +134,14 @@ AMainCharacter::AMainCharacter()
 	{
 		QSound = SC_Q.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_R(TEXT("SoundCue'/Game/_Game/Assets/Sound/cable-swish-whoosh-through-air-3-sound-effect-95306397_Cue.cable-swish-whoosh-through-air-3-sound-effect-95306397_Cue'"));
+	if (SC_R.Succeeded())
+	{
+		RSkillSound = SC_R.Object;
+	}
+
+	
 
 }
 
@@ -310,6 +318,23 @@ void AMainCharacter::Tick(float DeltaTime)
 			{
 				CurrentStamina = MaxStamina;
 			}
+		}
+	}
+
+	if(IsDrinkingHPPotion)
+	{
+		if (CurrentHP <= MaxHP)
+		{
+			SetHP(CurrentHP + DeltaTime * 20.f);
+		}
+		
+	}
+
+	if(IsDrinkingMPPotion)
+	{
+		if (CurrentMP <= MaxMP)
+		{
+			SetMP(CurrentMP + DeltaTime * 20.f);
 		}
 	}
 }
@@ -503,9 +528,10 @@ void AMainCharacter::RKeyPressed()
 {
 	if (bIsAttacking || CurrentMP <= 5.f)
 		return;
-	UE_LOG(LogTemp, Warning, TEXT("RSKILL"));
 	MainAnim->RSkillMontagePlay();
 	SetMP(CurrentMP - 5.f);
+
+	UGameplayStatics::PlaySound2D(GetWorld(), RSkillSound);
 
 	FVector Center = GetActorLocation();
 	TArray<FOverlapResult> HitResults;
@@ -745,13 +771,15 @@ void AMainCharacter::HPPotion()
 	else
 	{
 		HPPotionCount--;
-		SetHP(CurrentHP += HPPotionHealth);
+		IsDrinkingHPPotion = true;
+		GetWorldTimerManager().SetTimer(HPPotionTimer, this, &AMainCharacter::ResetHPPotion, 1.5f);
 	}
 
 }
 
 void AMainCharacter::MPPotion()
 {
+
 	if (MPPotionCount <= 0)
 	{
 		MPPotionCount = 0;
@@ -759,8 +787,9 @@ void AMainCharacter::MPPotion()
 	}
 	else
 	{
+		IsDrinkingMPPotion = true;
 		MPPotionCount--;
-		SetMP(CurrentMP += MPPotionHealth);
+		GetWorldTimerManager().SetTimer(MPPotionTimer, this, &AMainCharacter::ResetMPPotion, 1.5f);
 	}
 }
 
@@ -884,6 +913,16 @@ float AMainCharacter::GetCurrentHP()
 	return CurrentHP;
 }
 
+void AMainCharacter::ResetHPPotion()
+{
+	IsDrinkingHPPotion = false;
+}
+
+void AMainCharacter::ResetMPPotion()
+{
+	IsDrinkingMPPotion = false;
+}
+
 void AMainCharacter::SaveGame()
 {
 	UMainSaveGame* SaveGameInstance = Cast<UMainSaveGame>(UGameplayStatics::CreateSaveGameObject(UMainSaveGame::StaticClass()));
@@ -916,5 +955,15 @@ void AMainCharacter::LoadGame()
 
 	SetActorLocation(LoadGameInstance->CharacterStats.Location);
 	SetActorRotation(LoadGameInstance->CharacterStats.Rotation);
+}
+
+void AMainCharacter::SetBoss(AGideon* Gideon)
+{
+	Boss = Gideon;
+}
+
+AGideon* AMainCharacter::GetBoss()
+{
+	return Boss;
 }
 

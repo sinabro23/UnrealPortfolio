@@ -22,8 +22,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -45,11 +47,26 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* FireSpin;
 
-	UPROPERTY(VisibleAnywhere)
-	class UWidgetComponent* HPBar;
+	//UPROPERTY(VisibleAnywhere)
+	//class UWidgetComponent* HPBar;
 
 	FTimerHandle DeadTimerHandle;
 
+	class AMainCharacter* MainCharacter = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FName BossName = FName("Gideon");
+
+	FTimerHandle SecondPageMeteorTimer;
+	float MeteorTime = 0.5f;
+	int32 MeteorRepeatCount = 0;
+
+	FTimerHandle GetMeteorVectorTimer;
+	float GetMeteorVectorRepeatTime = 0.5f;
+	int32 GetMeteorVectorRepeatCount = 0;
+
+	FTimerHandle MeteorOneShotTimer;
+	float MeteorOneShotTime = 0.5f;
 
 private:
 	float MovementSpeed = 500.f;
@@ -71,6 +88,9 @@ private:
 	UParticleSystem* MeteorFireParticle;
 	UPROPERTY()
 	UParticleSystem* MeteorShowerParticle;
+
+	FVector MeteorSpawnVector = FVector();
+
 public:
 	void FireFireBall();
 	void FireMeteor();
@@ -86,6 +106,11 @@ public:
 	void TransformPage2();
 
 	void SetCanBeAttacked(bool CanBe);
+
+	void RepeatMeteor();
+
+	void SendMeteorRepeat();
+	void SendMeteorOneShot();
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	float CurrentHP = 500.f;

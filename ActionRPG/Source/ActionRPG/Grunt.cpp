@@ -29,4 +29,5 @@ AGrunt::AGrunt()
 	SetMaxHP(120.f);
 	SetHP(MaxHP);
 	SetRemainCoinAmount(300);
+
 }

@@ -99,6 +99,7 @@ AMonster::AMonster()
 
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
+
 }
 
 // Called when the game starts or when spawned
@@ -297,23 +298,26 @@ void AMonster::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 
 void AMonster::SpawnItem()
 {
-	FVector Loctaion = GetActorLocation() + (-1.f * GetActorUpVector()) * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	FVector Location = GetActorLocation() + (-1.f * GetActorUpVector()) * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
 	if (ShouldHappenInPercent(50))
 	{
 		if (ShouldHappenInPercent(50))
 		{
-			AHPPotion* HPPotion = GetWorld()->SpawnActor<AHPPotion>(Loctaion, FRotator::ZeroRotator);
+			AHPPotion* HPPotion = GetWorld()->SpawnActor<AHPPotion>(Location, FRotator::ZeroRotator);
 		}
 		else
 		{
-			AMPPotion* MPPotion = GetWorld()->SpawnActor<AMPPotion>(Loctaion, FRotator::ZeroRotator);
+			AMPPotion* MPPotion = GetWorld()->SpawnActor<AMPPotion>(Location, FRotator::ZeroRotator);
 		}
 	}
 	else
 	{
-		ACoin* Coin = GetWorld()->SpawnActor<ACoin>(Loctaion, FRotator::ZeroRotator);
-		Coin->SetCoinAmount(RemainCoinAmount);
+		ACoin* Coin = GetWorld()->SpawnActor<ACoin>(Location, FRotator::ZeroRotator);
+		if (Coin)
+		{
+			Coin->SetCoinAmount(RemainCoinAmount);
+		}
 	}
 }
 

@@ -118,8 +118,6 @@ public:
 	void WidgetTurnOn();
 	void WidgetTurnOff();
 
-
-
 	FVector OriginVector;
 	FVector GetOriginVector();
 	UFUNCTION()

@@ -42,10 +42,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 	TSubclassOf<class UGameEndWidget> GameEndWidgetClass;
 
+	UPROPERTY()
+	class UUserWidget* BossHUDOverlay;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+	TSubclassOf<class UUserWidget> BossHUDOverlayAsset;
+
 public:
 	void OnGamePause();
 	void OnPotionShop();
 	void OnGameEnd();
+	void SetBossHPWidgetVisibility(bool bVisible);
 
 
 private:
@@ -61,4 +68,6 @@ private:
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;
+
+	//class USoundCue* BGMSound;
 };

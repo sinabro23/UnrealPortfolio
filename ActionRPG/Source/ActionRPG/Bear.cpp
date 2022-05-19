@@ -35,4 +35,5 @@ ABear::ABear()
 	SetMovementSpeed(600.f);
 	SetMaxHP(240.f);
 	SetHP(MaxHP);
+
 }

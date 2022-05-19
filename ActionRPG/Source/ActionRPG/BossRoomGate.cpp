@@ -4,12 +4,13 @@
 #include "BossRoomGate.h"
 #include "Components/BoxComponent.h"
 #include "MainCharacter.h"
+#include "MainPlayerController.h"
 
 // Sets default values
 ABossRoomGate::ABossRoomGate()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_GATE(TEXT("StaticMesh'/Game/Infinity_Blade_Assets/Meshes/Props/WroughtlronGate.WroughtlronGate'"));
@@ -30,7 +31,8 @@ ABossRoomGate::ABossRoomGate()
 void ABossRoomGate::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	FirstPositon = GetActorLocation();
 }
 
 void ABossRoomGate::PostInitializeComponents()
@@ -41,13 +43,35 @@ void ABossRoomGate::PostInitializeComponents()
 
 }
 
+void ABossRoomGate::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (IsInBoosRoom)
+	{
+		SetActorLocation(GetActorLocation() + FVector(0.0f, 0.0f, DeltaTime * 450.f));
+	}
+}
+
 void ABossRoomGate::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto Character = Cast<AMainCharacter>(OtherActor);
 	if (Character)
 	{
 		Character->SetCharacterInBossRoom(true);
+		AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(Character->GetController());
+		if (MainPlayerController)
+		{
+			MainPlayerController->SetBossHPWidgetVisibility(true);
+		}
+		IsInBoosRoom = true;
+
+		GetWorldTimerManager().SetTimer(GateTimer, this, &ABossRoomGate::GateClosed, GateEndTime);
 	}
+}
+
+void ABossRoomGate::GateClosed()
+{
+	IsInBoosRoom = false;
 }
 
 

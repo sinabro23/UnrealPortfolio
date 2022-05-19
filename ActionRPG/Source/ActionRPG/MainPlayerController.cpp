@@ -6,6 +6,8 @@
 #include "MainGameplayWidget.h"
 #include "PotionShopWidget.h"
 #include "GameEndWidget.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 AMainPlayerController::AMainPlayerController()
 {
@@ -27,6 +29,11 @@ AMainPlayerController::AMainPlayerController()
 		GameEndWidgetClass = UI_GAMEEND_C.Class;
 	}
 
+	//static ConstructorHelpers::FObjectFinder<USoundCue> SC_BGM(TEXT("SoundCue'/Game/_Game/Assets/Sounds/BGM/battle-of-the-dragons-8037_Cue.battle-of-the-dragons-8037_Cue'"));
+	//if (SC_BGM.Succeeded())
+	//{
+	//	BGMSound = SC_BGM.Object;
+	//}
 }
 
 void AMainPlayerController::BeginPlay()
@@ -43,6 +50,23 @@ void AMainPlayerController::BeginPlay()
 
 	ChangeInputMode(true);
 
+
+	if (BossHUDOverlayAsset)
+	{
+		BossHUDOverlay = CreateWidget<UUserWidget>(this, BossHUDOverlayAsset);
+	}
+
+	if (BossHUDOverlay)
+	{
+		BossHUDOverlay->AddToViewport();
+		BossHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	//if (BGMSound)
+	//{
+	//	UGameplayStatics::PlaySound2D(GetWorld(), BGMSound);
+	//}
+	
 }
 
 void AMainPlayerController::SetupInputComponent()
@@ -85,6 +109,26 @@ void AMainPlayerController::OnGameEnd()
 
 		SetPause(true);
 		ChangeInputMode(false);
+	}
+}
+
+void AMainPlayerController::SetBossHPWidgetVisibility(bool bVisible)
+{
+	if (bVisible)
+	{
+		if (BossHUDOverlay)
+		{
+			BossHUDOverlay->AddToViewport();
+			BossHUDOverlay->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if (BossHUDOverlay)
+		{
+			BossHUDOverlay->AddToViewport();
+			BossHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 

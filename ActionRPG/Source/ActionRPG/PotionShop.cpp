@@ -5,6 +5,9 @@
 #include "Components/BoxComponent.h"
 #include "MainCharacter.h"
 #include "Components/WidgetComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 APotionShop::APotionShop()
@@ -37,12 +40,19 @@ APotionShop::APotionShop()
 		TextWidget->SetWidgetClass(UW_SELLING.Class);
 		TextWidget->SetDrawSize(FVector2D(500.f, 100.f));
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_BGM(TEXT("SoundCue'/Game/_Game/Assets/Sound/BGM/cinematic-dramatic-11120_Cue.cinematic-dramatic-11120_Cue'"));
+	if (SC_BGM.Succeeded())
+	{
+		BGMSound = SC_BGM.Object;
+	}
 }
 
 // Called when the game starts or when spawned
 void APotionShop::BeginPlay()
 {
 	Super::BeginPlay();
+	UGameplayStatics::PlaySound2D(GetWorld(), BGMSound);
 	
 }
 
