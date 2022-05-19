@@ -7,6 +7,7 @@
 #include "MainPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Gideon.h"
 
 // Sets default values
 ABossRoomGate::ABossRoomGate()
@@ -76,6 +77,7 @@ void ABossRoomGate::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		IsInBoosRoom = true;
 
 		UGameplayStatics::PlaySound2D(GetWorld(), RollingSound);
+		Character->GetBoss()->PlayOpeningSound();
 		GetWorldTimerManager().SetTimer(GateTimer, this, &ABossRoomGate::GateClosed, GateEndTime);
 	}
 }

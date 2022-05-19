@@ -93,6 +93,9 @@ private:
 
 	class USoundCue* FireballSound;
 	USoundCue* MeteorSound;
+	USoundCue* OpeningSound;
+
+
 
 
 public:
@@ -115,6 +118,8 @@ public:
 
 	void SendMeteorRepeat();
 	void SendMeteorOneShot();
+
+	void PlayOpeningSound();
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	float CurrentHP = 500.f;

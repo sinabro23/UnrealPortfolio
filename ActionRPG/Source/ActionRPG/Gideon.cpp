@@ -112,6 +112,12 @@ AGideon::AGideon()
 		MeteorSound = SC_Meteor.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> SC_OpeningSound(TEXT("SoundCue'/Game/ParagonGideon/Audio/Wavs/GideonOpening.GideonOpening'"));
+	if (SC_OpeningSound.Succeeded())
+	{
+		OpeningSound = SC_OpeningSound.Object;
+	}
+
 
 }
 
@@ -317,6 +323,14 @@ void AGideon::SendMeteorOneShot()
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(20.f, DamageEvent, GetController(), this);
 		}
+	}
+}
+
+void AGideon::PlayOpeningSound()
+{
+	if (OpeningSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), OpeningSound);
 	}
 }
 
